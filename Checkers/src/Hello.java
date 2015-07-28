@@ -9,7 +9,7 @@ public class Hello {
 	}
 	
 	int getX() {
-		return x;
+		return y;
 	}
 	
 	int getY() {
