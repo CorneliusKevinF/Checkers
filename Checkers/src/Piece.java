@@ -1,3 +1,10 @@
+/*
+ * Piece Class
+ * @Author Robert Dvorscak
+ * @ int color
+ * @ int[] location
+ * @ boolean isKing
+ */
 
 public class Piece {
 	private int color; //0=Black 1=Red
@@ -12,7 +19,7 @@ public class Piece {
 			System.out.println("ERROR: Invalid location.");
 		}
 	}
-	//Movement Below **********************
+//Movement Below **********************
 	
 	public int[] jump(String direction){ //FL, FR, BL, BR
 		move(direction);
@@ -94,7 +101,7 @@ public class Piece {
 	}
 	
 	
-	//Getters and Setters Below ***********
+//Getters and Setters Below ***********
 
 	public boolean isKing() {
 		return isKing;
