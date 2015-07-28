@@ -15,14 +15,13 @@ public class Piece {
 	//Movement Below **********************
 	
 	public int[] jump(String direction){ //FL, FR, BL, BR
-		int[] location = new int[2];
+		move(direction);
+		move(direction);
 		
-		//TODO Write body of jump method.
 		return location;
 	}
 	
 	public int[] move(String direction){ //FL, FR, BL, BR
-		int[] location = new int[2];
 		if(color == 0){
 			switch(direction){
 				case "FL":
