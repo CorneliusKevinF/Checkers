@@ -1,8 +1,8 @@
 
 public class Piece {
-	int color; //0=Black 1=Red 3=?
+	private int color; //0=Black 1=Red
 	
-	Piece (int color) {
+	Piece(int color) {
 		this.color = color;
 	}
 }
