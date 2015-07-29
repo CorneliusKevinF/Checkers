@@ -1,14 +1,29 @@
-public class Game {
+/**
+ * The Game class is responsible for handling the logic for moving, capturing, and promoting pieces. 
+ * Additionally, this class manages the state of the game. 
+ * @author Kevin Cornelius
+ */
+ public class Game {
 	private Board board;
 	private int numberOfPlayers;
 	private Player player1, player2;
 	private Player activePlayer;
 	
+	/**
+	 * 
+	 * @param numberOfPlayers
+	 */
 	Game(int numberOfPlayers) {
 		this.board = new Board();
 	}
-
-	void move(Player player, Piece piece, Position position) {
+	
+	/**
+	 * Attempts a move requested by a player. 
+	 * @param player
+	 * @param piece
+	 * @param position
+	 */
+	void move(Player player, Piece piece, Position position) throws InvalidMoveException {
 		/* If the player presented is the active one and the move is valid
 		 * update the position of the piece, resolve any side effects, and change the active player
 		 * return boolean indicating success or failure.

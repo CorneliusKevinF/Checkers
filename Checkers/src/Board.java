@@ -1,13 +1,13 @@
 
 public class Board {
-	int[][] squares;
+	Position[][] squares;
 	
 	public Board() {
-		squares = new int[8][8];
+		squares = new Position[8][8];
 		
 		for(int i = 0; i < squares.length; i++) {
 			for(int j = 0; j < squares[0].length; i++) {
-				
+				squares[i][j] = new Position(i,j);
 			}
 		}
 	}
