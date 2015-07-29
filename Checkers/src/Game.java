@@ -15,15 +15,20 @@
 	 * @param numberOfPlayers
 	 */
 	Game(int numberOfPlayers) {
+		this.numberOfPlayers = numberOfPlayers;
 		this.board = new Board();
+		activePlayer = null;
+		activePiece = null;
+		this.player1 = new Player();
+		this.player2 = new Player();
 	}
 	
 	/**
 	 * Attempts a move requested by a player. 
-	 * @param player
-	 * @param piece
-	 * @param position
-	 * @return <code>void</code>
+	 * @param player The Player attempting the move.
+	 * @param startingPosition The starting position of the Piece to be moved.
+	 * @param endingPosition The ending position of the Piece to be moved.
+	 * @return 
 	 * @throws InvalidMoveException
 	 */
 	void move(Player player, Position startingPosition, Position endingPosition) throws InvalidMoveException {
@@ -31,7 +36,7 @@
 		 * update the position of the piece, resolve any side effects, and change the active player
 		 * return boolean indicating success or failure.
 		 */
-		if(activePlayer == player) {
+		if(activePlayer.getID() == player.getID()) {
 			
 		}
 	}
