@@ -7,16 +7,16 @@ public class Player {
 		HUMAN, ROBOT;
 	}
 	
-	Player(String name, Type type) {
+	public Player(String name, Type type) {
 		this.name = name;
 		this.type = type;
 	}
 	
-	String getName() {
+	public String getName() {
 		return this.name;
 	}
 	
-	Type getType() {
+	public Type getType() {
 		return this.type;
 	}
 }

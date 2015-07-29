@@ -3,29 +3,33 @@ public class Position {
 	private int x, y;
 	private Piece piece;
 	
-	Position(int x, int y) {
+	public Position(int x, int y) {
 		this.x = x;
 		this.y = y;
 		piece = null;
 	}
 	
-	void addPiece(Piece piece) {
+	public Piece getPiece() {
+		return this.piece;
+	}
+	
+	public void addPiece(Piece piece) {
 		this.piece = piece;
 	}
 	
-	void removePiece() { 
+	public void removePiece() { 
 		this.piece = null;
 	}
 	
-	boolean hasPiece() {
+	public boolean hasPiece() {
 		return !(piece == null);
 	}
 	
-	int getX() {
+	public int getX() {
 		return x;
 	}
 	
-	int getY() {
+	public int getY() {
 		return y;
 	}
 }

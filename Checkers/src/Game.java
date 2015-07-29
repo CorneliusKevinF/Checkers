@@ -22,6 +22,8 @@
 	 * @param player
 	 * @param piece
 	 * @param position
+	 * @return <code>void</code>
+	 * @throws InvalidMoveException
 	 */
 	void move(Player player, Piece piece, Position position) throws InvalidMoveException {
 		/* If the player presented is the active one and the move is valid
