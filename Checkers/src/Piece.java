@@ -8,24 +8,23 @@
  */
 
 public class Piece {
-	private int color; //0=Black 1=Red
-	private int[] location; //row, column from black team perspective
-	private boolean isKing;
+	private Color color;
 	
+	public enum Color {
+		BLACK, RED
+	}
+	
+	Piece(Color color) {
+		this.color = color;
+	}
+	
+//Movement Below * TO BE MOVED TO GAME CLASS
+	/*
+	private int[] location; //row, column from black team perspective	
 	private enum Direction {
 		FORWARDRIGHT, FORWARDLEFT, BACKWARDRIGHT, BACKWARDLEFT
 	}
-	
-	Piece(int color, int[] location) {
-		this.color = color;
-		this.location = location;
-		this.isKing = false;
-		if(location.length>2){
-			System.out.println("ERROR: Invalid location.");
-		}
-	}
-//Movement Below **********************
-	
+	 
 	public int[] jump(Direction direction){
 		move(direction);
 		move(direction);
@@ -104,23 +103,14 @@ public class Piece {
 		}
 		return location;
 	}
-	
+	*/
 	
 //Getters and Setters Below ***********
-
-	public boolean isKing() {
-		return isKing;
-	}
-
-	public void setKing(boolean isKing) {
-		this.isKing = isKing;
-	}
-
-	public int getColor() {
+	public Color getColor() {
 		return color;
 	}
 
-	public void setColor(int color) {
+	public void setColor(Color color) {
 		this.color = color;
 	}
 }
