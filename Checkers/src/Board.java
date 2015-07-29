@@ -2,12 +2,17 @@
 public class Board {
 	int[][] squares;
 	
-	public Board(int[][] squares) {
-		this.squares = squares;
+	public Board() {
+		squares = new int[8][8];
+		
+		for(int i = 0; i < squares.length; i++) {
+			for(int j = 0; j < squares[0].length; i++) {
+				
+			}
+		}
 	}
 	
 	public void Start(){
-		squares = new int[8][8];
 		for(int i=0;i<8;i++){
 			for(int j=0;j<8;j++){
 				if(i==0 && j%2==0){

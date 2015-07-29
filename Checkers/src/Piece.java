@@ -1,6 +1,7 @@
 /*
  * Piece Class
- * @Author Robert Dvorscak
+ * @author Robert Dvorscak
+ * @author Kevin Cornelius
  * @ int color
  * @ int[] location
  * @ boolean isKing
@@ -9,7 +10,11 @@
 public class Piece {
 	private int color; //0=Black 1=Red
 	private int[] location; //row, column from black team perspective
-	private boolean isKing; 
+	private boolean isKing;
+	
+	private enum Direction {
+		FORWARDRIGHT, FORWARDLEFT, BACKWARDRIGHT, BACKWARDLEFT
+	}
 	
 	Piece(int color, int[] location) {
 		this.color = color;
@@ -21,25 +26,25 @@ public class Piece {
 	}
 //Movement Below **********************
 	
-	public int[] jump(String direction){ //FL, FR, BL, BR
+	public int[] jump(Direction direction){
 		move(direction);
 		move(direction);
 		
 		return location;
 	}
 	
-	public int[] move(String direction){ //FL, FR, BL, BR
+	public int[] move(Direction direction){
 		if(color == 0){
 			switch(direction){
-				case "FL":
+				case FORWARDLEFT:
 					location[1] = location[1]+1;//Forward
 					location[2] = location[2]-1;//Left
 					break;
-				case "FR":
+				case FORWARDRIGHT:
 					location[1] = location[1]+1;//Forward
 					location[2] = location[2]+1;//Right
 					break;
-				case "BL":
+				case BACKWARDLEFT:
 					if(isKing){
 						location[1] = location[1]-1;//Backwards
 						location[2] = location[2]-1;//Left
@@ -49,7 +54,7 @@ public class Piece {
 						System.out.println("ERROR: Piece is not a king.");
 					}
 					break;
-				case "BR":
+				case BACKWARDRIGHT:
 					if(isKing){
 						location[1] = location[1]-1;//Backwards
 						location[2] = location[2]+1;//Right
@@ -63,15 +68,15 @@ public class Piece {
 		}
 		else if(color ==1){
 			switch(direction){
-				case "FL":
+				case FORWARDLEFT:
 					location[1] = location[1]-1;//Forward
 					location[2] = location[2]+1;//Left
 					break;
-				case "FR":
+				case FORWARDRIGHT:
 					location[1] = location[1]-1;//Forward
 					location[2] = location[2]-1;//Right
 					break;
-				case "BL":
+				case BACKWARDLEFT:
 					if(isKing){
 						location[1] = location[1]+1;//Backwards
 						location[2] = location[2]+1;//Left
@@ -81,7 +86,7 @@ public class Piece {
 						System.out.println("ERROR: Piece is not a king.");
 					}
 					break;
-				case "BR":
+				case BACKWARDRIGHT:
 					if(isKing){
 						location[1] = location[1]+1;//Backwards
 						location[2] = location[2]-1;//Right
@@ -117,21 +122,5 @@ public class Piece {
 
 	public void setColor(int color) {
 		this.color = color;
-	}
-
-	public int getRow() {
-		return row;
-	}
-
-	public void setRow(int row) {
-		this.row = row;
-	}
-
-	public int getColumn() {
-		return column;
-	}
-
-	public void setColumn(int column) {
-		this.column = column;
 	}
 }
