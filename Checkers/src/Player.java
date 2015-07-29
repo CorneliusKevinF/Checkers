@@ -4,7 +4,7 @@ public class Player {
 	PlayerType type;
 	Color color;
 	int ID;
-	static int nextID;
+	static int nextID = 1;
 
 	public Player() {
 		this("", PlayerType.ROBOT, Color.RED);

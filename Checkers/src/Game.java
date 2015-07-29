@@ -17,10 +17,10 @@
 	Game(int numberOfPlayers) {
 		this.numberOfPlayers = numberOfPlayers;
 		this.board = new Board();
-		activePlayer = null;
 		activePiece = null;
 		this.player1 = new Player();
 		this.player2 = new Player();
+		activePlayer = player1;
 	}
 	
 	/**
@@ -146,5 +146,20 @@
 	private Position getJumpedPosition(Board board, Position startingPosition, Position endingPosition) {
 		return board.getPosition(((endingPosition.getX() - startingPosition.getX()) / 2) + startingPosition.getX(), 
 								(((endingPosition.getY() - startingPosition.getY()) / 2) + startingPosition.getY()));
+	}
+	
+	/*
+	 * Gettters and Setters
+	 */
+	public Player getPlayer1() {
+		return player1;
+	}
+	
+	public Player getPlayer2() {
+		return player2;
+	}
+	
+	public Board getBoard() {
+		return this.board;
 	}
 }

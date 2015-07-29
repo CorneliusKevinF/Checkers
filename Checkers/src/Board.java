@@ -8,8 +8,8 @@ public class Board {
 	public Board() {
 		squares = new Position[8][8];
 		
-		for(int i = 0; i < squares.length; i++) {
-			for(int j = 0; j < squares[0].length; i++) {
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 8; j++) {
 				squares[i][j] = new Position(i,j);
 			}
 		}
@@ -31,7 +31,7 @@ public class Board {
 	public Position getPosition(int x, int y) {
 		return squares[x][y];
 	}
-	
+
 	/*
 	// Setting up the board will be handled by the Game class, so that we can reuse the Board for other games if we want.
 	public void Start(){
