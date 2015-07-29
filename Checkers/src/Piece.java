@@ -11,7 +11,7 @@ public class Piece {
 	Piece(Color color) {
 		this.color = color;
 	}
-	
+
 //Movement Below
 	/*
 	private int[] location; //row, column from black team perspective	
