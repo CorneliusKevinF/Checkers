@@ -8,6 +8,7 @@
 	private int numberOfPlayers;
 	private Player player1, player2;
 	private Player activePlayer;
+	private Piece activePiece;
 	
 	/**
 	 * 
@@ -25,10 +26,13 @@
 	 * @return <code>void</code>
 	 * @throws InvalidMoveException
 	 */
-	void move(Player player, Piece piece, Position position) throws InvalidMoveException {
+	void move(Player player, Position startingPosition, Position endingPosition) throws InvalidMoveException {
 		/* If the player presented is the active one and the move is valid
 		 * update the position of the piece, resolve any side effects, and change the active player
 		 * return boolean indicating success or failure.
 		 */
+		if(activePlayer == player) {
+			
+		}
 	}
 }

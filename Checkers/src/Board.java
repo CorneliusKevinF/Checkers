@@ -14,7 +14,7 @@ public class Board {
 			}
 		}
 	}
-	
+
 	/**
 	 * @param piece	The Piece to be moved.
 	 * @param positions	An array of positions for the given Piece to traverse.

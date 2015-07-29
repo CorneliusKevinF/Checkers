@@ -1,20 +1,18 @@
-/*
+/**
  * Piece Class
  * @author Robert Dvorscak
  * @author Kevin Cornelius
- * @ int color
- * @ int[] location
- * @ boolean isKing
  */
 
 public class Piece {
 	private Color color;
+	private boolean isKing;
 
 	Piece(Color color) {
 		this.color = color;
 	}
 	
-//Movement Below * TO BE MOVED TO GAME CLASS
+//Movement Below
 	/*
 	private int[] location; //row, column from black team perspective	
 	private enum Direction {
@@ -102,6 +100,14 @@ public class Piece {
 	*/
 	
 //Getters and Setters Below ***********
+	public void promote() {
+		this.isKing = true;
+	}
+	
+	public boolean isKing() {
+		return this.isKing;
+	}
+	
 	public Color getColor() {
 		return color;
 	}
