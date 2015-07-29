@@ -1,13 +1,10 @@
 
 public class Player {
 	String name;
-	Type type;
-	
-	private enum Type {
-		HUMAN, ROBOT;
-	}
-	
-	public Player(String name, Type type) {
+	PlayerType type;
+	Color color;
+
+	public Player(String name, PlayerType type) {
 		this.name = name;
 		this.type = type;
 	}
@@ -16,7 +13,7 @@ public class Player {
 		return this.name;
 	}
 	
-	public Type getType() {
+	public PlayerType getType() {
 		return this.type;
 	}
 }

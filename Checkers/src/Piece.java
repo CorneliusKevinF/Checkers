@@ -9,11 +9,7 @@
 
 public class Piece {
 	private Color color;
-	
-	public enum Color {
-		BLACK, RED
-	}
-	
+
 	Piece(Color color) {
 		this.color = color;
 	}
