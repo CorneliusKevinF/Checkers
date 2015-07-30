@@ -1,8 +1,17 @@
 import java.util.ArrayList;
 
 /**
- * The Game class is responsible for handling the logic for moving, capturing, and promoting pieces. 
- * Additionally, this class manages the state of the game. 
+ * <p>
+ * The Game class is responsible for handling the Players and the Board. Currently, it implements rules for moving and capturing pieces.
+ * </p>
+ * <p>
+ * <b>Features to Add:</b>
+ * <ul>
+ * <li>Promotion ("Kinging") Logic</li>
+ * <li>Forced Multiple Jumps</li>
+ * <li>Victory Conditions (No Moves Remaining)</li>
+ * </ul>
+ * <p>
  * @author Kevin Cornelius
  */
  public class Game {
@@ -41,28 +50,14 @@ import java.util.ArrayList;
 	 * update the position of the piece, resolve any side effects, and change the active player
 	 * return boolean indicating success or failure.
 	 * @param player The Player attempting the move.
-	 * @param startingPosition The starting position of the Piece to be moved.
-	 * @param endingPosition The ending position of the Piece to be moved.
+	 * @param route An ArrayList of Positions to be traversed.
 	 * @return 
 	 * @throws InvalidMoveException
 	 */
 	public void move(Player player, ArrayList<Position> route) throws InvalidMoveException, InvalidPositionException {
-		/*
-		 * Debug Code: Can be commented out or deleted later.
-		 */
-		/*
-		System.out.println("Active player requesting move: " + (activePlayer.getID() == player.getID()));
-		System.out.println("Starting position contains a piece: " + startingPosition.hasPiece());
-		System.out.println("Ending position unoccupied: " + !endingPosition.hasPiece());
-		System.out.println("Active player owns piece to be moved: " + (startingPosition.getPiece().getColor() == player.getColor()));
-		*/
-		
-		System.out.print("Attempting Route: ");
-		for(Position position : route) { 
-			System.out.print("(" + position.getX() + ", " + position.getY() + ")");
-		}
 		
 		Position startingPosition = route.get(0);
+		// Position endingPosition = route.get(route.size() - 1);
 		
 		if(activePlayer.getID() == player.getID() 
 				&& startingPosition.hasPiece()
@@ -72,13 +67,10 @@ import java.util.ArrayList;
 			if(startingPosition.getPiece().isKing()) {
 				if((route.size() == 2) && isValidKingMove(route) && !route.get(1).hasPiece()) {
 					
-					System.out.println("King move is valid.");
-					
 					board.movePiece(startingPosition, route.get(1));
 					changeActivePlayer();
-				} else if(isValidKingJump(board, route)) {
 					
-					System.out.println("King jump is valid.");
+				} else if(isValidKingJump(board, route)) {
 					
 					ArrayList<Position> jumpedPositions = getJumpedPositions(this.board, route);
 
@@ -87,17 +79,15 @@ import java.util.ArrayList;
 					}			
 					
 					this.board.movePiece(startingPosition, route.get(route.size() - 1));
+					changeActivePlayer();
 				}
 			} else {
 				if((route.size() == 2) && isValidPawnMove(route) && !route.get(1).hasPiece()) {
 					
-					System.out.println("Pawn move is valid.");
-					
 					board.movePiece(startingPosition, route.get(1));
 					changeActivePlayer();
-				} else if (isValidPawnJump(board, route)) {
 					
-					System.out.println("Pawn jump is valid.");
+				} else if (isValidPawnJump(board, route)) {
 					
 					ArrayList<Position> jumpedPositions = getJumpedPositions(this.board, route);
 					
@@ -106,13 +96,9 @@ import java.util.ArrayList;
 					}
 					
 					this.board.movePiece(startingPosition, route.get(route.size() - 1));
+					changeActivePlayer();
 				}
 			}
-		} else {
-			/*
-			 * Debug Code: This else branch can be removed later.
-			 */
-			System.out.println("Move is invalid.");
 		}
 	}
 
@@ -176,7 +162,7 @@ import java.util.ArrayList;
 				|| (nextPosition.getX() == (currentPosition.getX() - 2)))) {
 				
 				jumpedPosition = getJumpedPosition(board, currentPosition, nextPosition);
-				validity = (jumpedPosition.hasPiece() && (jumpedPosition.getPiece().getColor() != currentPosition.getPiece().getColor()));
+				validity = (jumpedPosition.hasPiece() && (jumpedPosition.getPiece().getColor() != activePlayer.getColor()));
 			}
 			
 			if(!validity) return validity;

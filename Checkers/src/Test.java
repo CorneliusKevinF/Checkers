@@ -3,7 +3,9 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 /**
- * Running this program will result in an infinite loop terminated by type "EXIT" into the console.
+ * Running this program will result in an infinite loop terminated by type "EXIT" into the console. 
+ * To make a move, type into the console a list of coordinate pairs (e.g. (1, 3) (2, 4) (9, 3)). 
+ * The move will only occur if it's the appropriate players turn and the move is legal.
  * @author Kevin
  *
  */
@@ -15,8 +17,6 @@ public class Test {
 		Game game = new Game();
 		Piece piece = new Piece(Color.RED);
 		Board gameBoard = game.getBoard(), board = new Board();
-		Player kevin = new Player("Kevin", PlayerType.HUMAN, Color.RED);
-		Player bobby = new Player("Bobby", PlayerType.HUMAN, Color.BLACK);
 
 		try {
 			board.getPosition(1, 1).addPiece(piece);
@@ -80,41 +80,33 @@ public class Test {
 		
 		try {
 			Game testGame = new Game();
-			Player gamePlayer1 = game.getPlayer1();
-			Player gamePlayer2 = game.getPlayer2();
-			Board testBoard = game.getBoard();
+			Board testBoard = testGame.getBoard();
 			Position inputPosition;
 			ArrayList<Position> route;
 			
 			String input = "test";
 			Scanner scanner = new Scanner(System.in);
-			Pattern pattern = Pattern.compile("\\(([0-7]), ([0-7])\\)");
-			Matcher matcher;
+			Pattern movePattern = Pattern.compile("\\(([0-7]), ([0-7])\\)");
+			Matcher moveMatcher;
 			testGame.stageBoard();
 			
 			while (!input.equals("EXIT")) {
 				route = new ArrayList<Position>();
-				System.out.println("Active Player: " + game.getActivePlayer().getID());
+				System.out.println("Active Player: " + testGame.getActivePlayer().getID());
 				printBoard(testBoard);
 				
 				System.out.println("\nEnter a Move.");
 				
 				input = scanner.nextLine();
-				matcher = pattern.matcher(input);
+				moveMatcher = movePattern.matcher(input);
 				
-				while(matcher.find()) {
-						/*
-						System.out.println("Pattern Matched!");
-						System.out.println(matcher.group(0));
-						System.out.println(matcher.group(1));
-						System.out.println(matcher.group(2));
-						*/
-						inputPosition = testBoard.getPosition(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)));
+				while(moveMatcher.find()) {
+						inputPosition = testBoard.getPosition(Integer.parseInt(moveMatcher.group(1)), Integer.parseInt(moveMatcher.group(2)));
 					
 						route.add(inputPosition);
 				}
 				
-				if(route.size() >= 2) game.move(game.getActivePlayer(), route);
+				if(route.size() >= 2) testGame.move(testGame.getActivePlayer(), route);
 			}
 			
 			scanner.close();
