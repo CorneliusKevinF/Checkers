@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 /**
  * Running this program will result in an infinite loop terminated by type "EXIT" into the console.
  * @author Kevin
@@ -81,26 +83,46 @@ public class Test {
 			Player gamePlayer1 = game.getPlayer1();
 			Player gamePlayer2 = game.getPlayer2();
 			Board testBoard = game.getBoard();
+			Position inputPosition;
+			ArrayList<Position> route;
+			
 			String input = "test";
 			Scanner scanner = new Scanner(System.in);
-			
+			Pattern pattern = Pattern.compile("\\(([0-7]), ([0-7])\\)");
+			Matcher matcher;
 			testGame.stageBoard();
 			
 			while (!input.equals("EXIT")) {
-				System.out.println("Input: \"" + input + "\"");
+				route = new ArrayList<Position>();
 				System.out.println("Active Player: " + game.getActivePlayer().getID());
 				printBoard(testBoard);
 				
 				System.out.println("\nEnter a Move.");
 				
 				input = scanner.nextLine();
+				matcher = pattern.matcher(input);
 				
+				while(matcher.find()) {
+						/*
+						System.out.println("Pattern Matched!");
+						System.out.println(matcher.group(0));
+						System.out.println(matcher.group(1));
+						System.out.println(matcher.group(2));
+						*/
+						inputPosition = testBoard.getPosition(Integer.parseInt(matcher.group(1)), Integer.parseInt(matcher.group(2)));
+					
+						route.add(inputPosition);
+				}
+				
+				if(route.size() >= 2) game.move(game.getActivePlayer(), route);
 			}
 			
 			scanner.close();
 			
-		} catch (Exception e) {
+		} catch (InvalidMoveException e) {
 			System.out.println("Error.");
+		} catch (InvalidPositionException e) {
+			
 		}
 	}
 	

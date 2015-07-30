@@ -57,6 +57,11 @@ import java.util.ArrayList;
 		System.out.println("Active player owns piece to be moved: " + (startingPosition.getPiece().getColor() == player.getColor()));
 		*/
 		
+		System.out.print("Attempting Route: ");
+		for(Position position : route) { 
+			System.out.print("(" + position.getX() + ", " + position.getY() + ")");
+		}
+		
 		Position startingPosition = route.get(0);
 		
 		if(activePlayer.getID() == player.getID() 
