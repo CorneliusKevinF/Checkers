@@ -39,6 +39,14 @@ public class Board {
 			throw new InvalidPositionException("(" + x + ", " + y + ") is not a valid Position.", e);
 		}
 	}
+	
+	public void clear() {
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 8; j++) {
+				squares[i][j].removePiece();
+			}
+		}
+	}
 
 	/*
 	// Setting up the board will be handled by the Game class, so that we can reuse the Board for other games if we want.

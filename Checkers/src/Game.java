@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * The Game class is responsible for handling the logic for moving, capturing, and promoting pieces. 
  * Additionally, this class manages the state of the game. 
@@ -6,7 +8,6 @@
  public class Game {
 	private Board board;
 	private Player player1, player2, activePlayer;
-	private Piece activePiece;
 	
 	/**
 	 * 
@@ -14,10 +15,25 @@
 	 */
 	public Game() {
 		this.board = new Board();
-		this.activePiece = null;
 		this.player1 = new Player(Color.BLACK);
 		this.player2 = new Player(Color.RED);
 		this.activePlayer = player1;
+	}
+	
+	public void stageBoard() throws InvalidPositionException {
+		// Set the BLACK Pieces.
+		for(int i = 0; i < 8; i += 2) {
+			for(int j = 0; j < 3; j++) { 
+				this.board.getPosition(i + (j % 2), j).addPiece(new Piece(Color.BLACK));
+			}
+		}
+		
+		// Set the RED Pieces.
+		for(int i = 0; i < 8; i += 2) {
+			for(int j = 5; j < 8; j++) { 
+				this.board.getPosition(i + (j % 2), j).addPiece(new Piece(Color.RED));
+			}
+		}
 	}
 	
 	/**
@@ -30,7 +46,7 @@
 	 * @return 
 	 * @throws InvalidMoveException
 	 */
-	public void move(Player player, Position startingPosition, Position endingPosition) throws InvalidMoveException, InvalidPositionException {
+	public void move(Player player, ArrayList<Position> route) throws InvalidMoveException, InvalidPositionException {
 		/*
 		 * Debug Code: Can be commented out or deleted later.
 		 */
@@ -40,53 +56,51 @@
 		System.out.println("Ending position unoccupied: " + !endingPosition.hasPiece());
 		System.out.println("Active player owns piece to be moved: " + (startingPosition.getPiece().getColor() == player.getColor()));
 		*/
-
+		
+		Position startingPosition = route.get(0);
+		
 		if(activePlayer.getID() == player.getID() 
-				&& startingPosition.hasPiece() 
-				&& !endingPosition.hasPiece() 
-				&& (startingPosition.getPiece().getColor() == player.getColor())) {
+				&& startingPosition.hasPiece()
+				&& (startingPosition.getPiece().getColor() == player.getColor())
+				&& (route.size() >= 2)) {
 
 			if(startingPosition.getPiece().isKing()) {
-				if(isValidKingMove(startingPosition, endingPosition) && (activePiece == null)) {
+				if((route.size() == 2) && isValidKingMove(route) && !route.get(1).hasPiece()) {
 					
 					System.out.println("King move is valid.");
 					
-					board.movePiece(startingPosition, endingPosition);
+					board.movePiece(startingPosition, route.get(1));
 					changeActivePlayer();
-				} else if(isValidKingJump(board, startingPosition, endingPosition)) {
+				} else if(isValidKingJump(board, route)) {
 					
 					System.out.println("King jump is valid.");
 					
-					Position jumpedPosition = getJumpedPosition(this.board, startingPosition, endingPosition);
+					ArrayList<Position> jumpedPositions = getJumpedPositions(this.board, route);
+
+					for (Position jumpedPosition : jumpedPositions) {
+						jumpedPosition.removePiece();			
+					}			
 					
-					this.board.movePiece(startingPosition, endingPosition);
-					jumpedPosition.removePiece();
-					
-					/*
-					 * This is meant to allow additional moves for the piece which just jumped. Doesn't work ATM.
-					 */
-					this.activePiece = startingPosition.getPiece();
+					this.board.movePiece(startingPosition, route.get(route.size() - 1));
 				}
 			} else {
-				if(isValidPawnMove(startingPosition, endingPosition) && (activePiece == null)) {
+				if((route.size() == 2) && isValidPawnMove(route) && !route.get(1).hasPiece()) {
 					
 					System.out.println("Pawn move is valid.");
 					
-					board.movePiece(startingPosition, endingPosition);
+					board.movePiece(startingPosition, route.get(1));
 					changeActivePlayer();
-				} else if (isValidPawnJump(board, startingPosition, endingPosition)) {
+				} else if (isValidPawnJump(board, route)) {
 					
 					System.out.println("Pawn jump is valid.");
 					
-					Position jumpedPosition = getJumpedPosition(this.board, startingPosition, endingPosition);
+					ArrayList<Position> jumpedPositions = getJumpedPositions(this.board, route);
 					
-					this.board.movePiece(startingPosition, endingPosition);
-					jumpedPosition.removePiece();
+					for (Position jumpedPosition : jumpedPositions) {
+						jumpedPosition.removePiece();
+					}
 					
-					/*
-					 * This is meant to allow additional moves for the piece which just jumped. Doesn't work ATM.
-					 */
-					this.activePiece = startingPosition.getPiece();
+					this.board.movePiece(startingPosition, route.get(route.size() - 1));
 				}
 			}
 		} else {
@@ -100,28 +114,33 @@
 	/**
 	 * Checks if the given start and end positions for a move are valid for a Pawn.
 	 */
-	private boolean isValidPawnMove(Position startingPosition, Position endingPosition) {
+	private boolean isValidPawnMove(ArrayList<Position> route) {
 		int directionModifier;
+		Position currentPosition = route.get(0);
+		Position nextPosition = route.get(1);
 		
-		if(startingPosition.getPiece().getColor() == Color.BLACK) {
+		if(currentPosition.getPiece().getColor() == Color.BLACK) {
 			directionModifier = 1;
 		} else {
 			directionModifier = -1;
 		}
 		
-		return ((endingPosition.getY() == (startingPosition.getY() + directionModifier)) 
-				&& ((endingPosition.getX() == (startingPosition.getX() + 1))
-				|| (endingPosition.getX() == (startingPosition.getX() - 1))));
+		return ((nextPosition.getY() == (currentPosition.getY() + directionModifier)) 
+				&& ((nextPosition.getX() == (currentPosition.getX() + 1))
+				|| (nextPosition.getX() == (currentPosition.getX() - 1))));
 	}
 	
 	/**
 	 * Checks if the given start and end positions for a move are valid for a King.
 	 */
-	private boolean isValidKingMove(Position startingPosition, Position endingPosition) {
-		return (((endingPosition.getX() == (startingPosition.getX() + 1)) 
-				|| (endingPosition.getX() == (startingPosition.getX() - 1)))
-				&& ((endingPosition.getY() == (startingPosition.getY() + 1))
-				|| (endingPosition.getY() == (startingPosition.getY() - 1))));
+	private boolean isValidKingMove(ArrayList<Position> route) {
+		Position currentPosition = route.get(0);
+		Position nextPosition = route.get(1);
+		
+		return (((nextPosition.getX() == (currentPosition.getX() + 1)) 
+				|| (nextPosition.getX() == (currentPosition.getX() - 1)))
+				&& ((nextPosition.getY() == (currentPosition.getY() + 1))
+				|| (nextPosition.getY() == (currentPosition.getY() - 1))));
 	}
 	
 	/**
@@ -131,27 +150,31 @@
 	 * @param endingPosition The ending Position of the Piece making the jump.
 	 * @return Tells whether the proposed jump is valid for a Pawn.
 	 */
-	private boolean isValidPawnJump(Board board, Position startingPosition, Position endingPosition) throws InvalidPositionException {
+	private boolean isValidPawnJump(Board board, ArrayList<Position> route) throws InvalidPositionException {
 		int directionModifier;
-		int startX = startingPosition.getX();
-		int startY = startingPosition.getY();
-		int endX = endingPosition.getX();
-		int endY = endingPosition.getY();
-		Position jumpedPosition;
+		Position currentPosition, nextPosition, jumpedPosition;
 		boolean validity = false;
 		
-		if(startingPosition.getPiece().getColor() == Color.BLACK) {
+		if(route.get(0).getPiece().getColor() == Color.BLACK) {
 			directionModifier = 1;
 		} else {
 			directionModifier = -1;
 		}
 		
-		if((endY == (startY + (2 * directionModifier))) 
-				&& ((endX == (startX + 2)) || (endX == (startX - 2)))) {
-			jumpedPosition = getJumpedPosition(board, startingPosition, endingPosition);
-			if(jumpedPosition.hasPiece() && (jumpedPosition.getPiece().getColor() != startingPosition.getPiece().getColor())) {
-				validity = true;
+		
+		for(int i = 0; i < (route.size() - 1); i++) {
+			currentPosition = route.get(i);
+			nextPosition = route.get(i + 1);
+
+			if((nextPosition.getY() == (currentPosition.getY() + (2 * directionModifier))) 
+				&& ((nextPosition.getX() == (currentPosition.getX() + 2)) 
+				|| (nextPosition.getX() == (currentPosition.getX() - 2)))) {
+				
+				jumpedPosition = getJumpedPosition(board, currentPosition, nextPosition);
+				validity = (jumpedPosition.hasPiece() && (jumpedPosition.getPiece().getColor() != currentPosition.getPiece().getColor()));
 			}
+			
+			if(!validity) return validity;
 		}
 		
 		return validity;
@@ -164,19 +187,23 @@
 	 * @param endingPosition The ending Position of the Piece making the jump.
 	 * @return Tells whether the proposed jump is valid for a King.
 	 */
-	private boolean isValidKingJump(Board board, Position startingPosition, Position endingPosition) throws InvalidPositionException {
-		int startX = startingPosition.getX();
-		int startY = startingPosition.getY();
-		int endX = endingPosition.getX();
-		int endY = endingPosition.getY();
-		Position jumpedPosition;
+	private boolean isValidKingJump(Board board, ArrayList<Position> route) throws InvalidPositionException {
+		Position currentPosition, nextPosition, jumpedPosition;
 		boolean validity = false;
-		
-		if(((endX == (startX + 2)) || (endX == (startX - 2))) 
-				&& ((endY == (startY + 2)) || (endY == (startY - 2)))) {
-			jumpedPosition = getJumpedPosition(board, startingPosition, endingPosition);
-			if(jumpedPosition.hasPiece() && (jumpedPosition.getPiece().getColor() != startingPosition.getPiece().getColor())) {
-				validity = true;
+
+		for(int i = 0; i < (route.size() - 1); i++) {
+			currentPosition = route.get(i);
+			nextPosition = route.get(i + 1);
+
+			if(((nextPosition.getY() == (currentPosition.getY() + 2))
+					|| (nextPosition.getY() == (currentPosition.getY() - 2)))
+				&& ((nextPosition.getX() == (currentPosition.getX() + 2)) 
+				|| (nextPosition.getX() == (currentPosition.getX() - 2)))) {
+				
+				jumpedPosition = getJumpedPosition(board, currentPosition, nextPosition);
+				validity = (jumpedPosition.hasPiece() && (jumpedPosition.getPiece().getColor() != currentPosition.getPiece().getColor()));
+			
+				if(!validity) return validity;
 			}
 		}
 		
@@ -190,9 +217,24 @@
 	 * @param endingPosition The ending Position of the Piece making the jump.
 	 * @return The Position jumped when a jump from/to the given Positions is made.
 	 */
+	private ArrayList<Position> getJumpedPositions(Board board, ArrayList<Position> route) throws InvalidPositionException {
+		Position currentPosition, nextPosition;
+		ArrayList<Position> jumpedPositions = new ArrayList<Position>();
+		
+		for(int i = 0; i < (route.size() -1); i++) {
+			currentPosition = route.get(i);
+			nextPosition = route.get(i + 1);
+			
+			jumpedPositions.add(i, board.getPosition(((nextPosition.getX() - currentPosition.getX()) / 2) + currentPosition.getX(), 
+								(((nextPosition.getY() - currentPosition.getY()) / 2) + currentPosition.getY())));
+		}
+		
+		return jumpedPositions;
+	}
+	
 	private Position getJumpedPosition(Board board, Position startingPosition, Position endingPosition) throws InvalidPositionException {
 		return board.getPosition(((endingPosition.getX() - startingPosition.getX()) / 2) + startingPosition.getX(), 
-								(((endingPosition.getY() - startingPosition.getY()) / 2) + startingPosition.getY()));
+				(((endingPosition.getY() - startingPosition.getY()) / 2) + startingPosition.getY()));
 	}
 	
 	/**
@@ -220,6 +262,10 @@
 	
 	public Player getPlayer2() {
 		return player2;
+	}
+	
+	public Player getActivePlayer() {
+		return this.activePlayer;
 	}
 	
 	public Board getBoard() {
