@@ -16,20 +16,28 @@ public class Board {
 	}
 
 	/**
-	 * @param piece	The Piece to be moved.
-	 * @param positions	An array of positions for the given Piece to traverse.
+	 * Moves a Piece on the Board from one Position to another.
+	 * @param startingPosition	The starting Position of the Piece to be moved.
+	 * @param endingPosition The Position for the Piece to be moved to.
 	 */
 	public void movePiece(Position startingPosition, Position endingPosition) throws InvalidMoveException {
-		if(startingPosition.hasPiece() && !endingPosition.hasPiece()) {
 			endingPosition.addPiece(startingPosition.getPiece());
 			startingPosition.removePiece();
-		} else {
-			throw new InvalidMoveException("Invalid move.");
-		}
 	}
 	
-	public Position getPosition(int x, int y) {
-		return squares[x][y];
+	/**
+	 * Retrieves a position from the Board.
+	 * @param x The x-line on which the desired Position rests.
+	 * @param y The y-line on which the desired Position rests.
+	 * @return The specified Position on the Board.
+	 * @throws InvalidPositionException
+	 */
+	public Position getPosition(int x, int y) throws InvalidPositionException {
+		try {
+			return squares[x][y];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new InvalidPositionException("(" + x + ", " + y + ") is not a valid Position.", e);
+		}
 	}
 
 	/*

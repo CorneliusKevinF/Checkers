@@ -1,4 +1,8 @@
-
+/**
+ * 
+ * @author Kevin
+ *
+ */
 public class Player {
 	String name;
 	PlayerType type;
@@ -8,6 +12,10 @@ public class Player {
 
 	public Player() {
 		this("", PlayerType.ROBOT, Color.RED);
+	}
+	
+	public Player(Color color) {
+		this("", PlayerType.ROBOT, color);
 	}
 	
 	public Player(String name, PlayerType type, Color color) {

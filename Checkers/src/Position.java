@@ -1,4 +1,8 @@
-
+/**
+ * 
+ * @author Kevin
+ *
+ */
 public class Position {
 	private int x, y;
 	private Piece piece;
