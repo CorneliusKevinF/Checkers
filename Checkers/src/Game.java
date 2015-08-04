@@ -22,7 +22,7 @@ import java.util.ArrayList;
 	 * 
 	 * @param numberOfPlayers
 	 */
-	public Game() {
+	public Game() {//There is no parameter here???
 		this.board = new Board();
 		this.player1 = new Player(Color.BLACK);
 		this.player2 = new Player(Color.RED);
@@ -53,6 +53,7 @@ import java.util.ArrayList;
 	 * @param route An ArrayList of Positions to be traversed.
 	 * @return 
 	 * @throws InvalidMoveException
+	 * @throws InvalidPositionException
 	 */
 	public void move(Player player, ArrayList<Position> route) throws InvalidMoveException, InvalidPositionException {
 		
@@ -223,9 +224,23 @@ import java.util.ArrayList;
 		return jumpedPositions;
 	}
 	
+	/**
+	 * 
+	 * @param board - The Board on which the jump is being attempted
+	 * @param startingPosition - The starting position of the piece making the jump
+	 * @param endingPosition - The ending position of the piece making the jump
+	 * @return Position - The new position of the jumping piece
+	 * @throws InvalidPositionExceptionf
+	 */
 	private Position getJumpedPosition(Board board, Position startingPosition, Position endingPosition) throws InvalidPositionException {
-		return board.getPosition(((endingPosition.getX() - startingPosition.getX()) / 2) + startingPosition.getX(), 
-				(((endingPosition.getY() - startingPosition.getY()) / 2) + startingPosition.getY()));
+		try{
+			return board.getPosition(((endingPosition.getX() - startingPosition.getX()) / 2) + startingPosition.getX(), 
+					(((endingPosition.getY() - startingPosition.getY()) / 2) + startingPosition.getY()));
+		}
+		catch(InvalidPositionException e){
+			throw new InvalidPositionException ("This is not a valid Position.", e);
+		}//TODO Kevin look at this to see what I added.
+		
 	}
 	
 	/**

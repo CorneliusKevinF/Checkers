@@ -1,6 +1,10 @@
 /**
  * 
  * @author Kevin
+ * @author Javadocs Bobby
+ * 
+ * {@literal meaning of x is horizontal value}
+ * {@literal meaning of y is vertical value}
  *
  */
 public class Position {
@@ -29,10 +33,18 @@ public class Position {
 		return !(piece == null);
 	}
 	
+	/**
+	 * 
+	 * @return horizontal value
+	 */
 	public int getX() {
 		return this.x;
 	}
 	
+	/**
+	 * 
+	 * @return vertical value
+	 */
 	public int getY() {
 		return this.y;
 	}
