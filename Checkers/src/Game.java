@@ -253,6 +253,7 @@ import java.util.ArrayList;
 			this.activePlayer = this.player1;
 		}
 		
+		//TODO Remove after debugging (Kevin use this instead becasue it shows up as a blue line over here ->
 		/*
 		 * Debug Section: Will comment out or delete later.
 		 */
@@ -262,7 +263,7 @@ import java.util.ArrayList;
 	/*
 	 * Getters and Setters
 	 */
-	public Player getPlayer1() {
+	public Player getPlayer1() {//TODO Kevin, tell me why we need num players about instead of a player flag if there are only 2?
 		return player1;
 	}
 	

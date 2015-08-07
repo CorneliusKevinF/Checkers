@@ -2,8 +2,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+
+//TODO Find out why I keep getting error when trying to run. Unsupported major.minor
 /**
- * Running this program will result in an infinite loop terminated by type "EXIT" into the console. 
+ * Running this program will result in an infinite loop terminated by typ "EXIT" into the console. 
  * To make a move, type into the console a list of coordinate pairs (e.g. (1, 3) (2, 4) (9, 3)). 
  * The move will only occur if it's the appropriate players turn and the move is legal.
  * @author Kevin
@@ -126,7 +128,7 @@ public class Test {
 	private static void printBoard(Board board) throws InvalidPositionException{
 		Position tempPosition;
 		
-		System.out.println("Printing Boad:\n  --------------------------------- ");
+		System.out.println("Printing Board:\n  --------------------------------- ");
 		
 		for(int i = 7; i >= 0; i--) {
 			System.out.print(i + " ");
@@ -150,6 +152,7 @@ public class Test {
 							}
 							break;
 						default:
+							System.out.print("| E ");
 							break;
 					}
 				} else {
