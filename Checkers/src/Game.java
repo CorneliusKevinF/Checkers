@@ -18,10 +18,6 @@ import java.util.ArrayList;
 	private Board board;
 	private Player player1, player2, activePlayer;
 	
-	/**
-	 * 
-	 * @param numberOfPlayers
-	 */
 	public Game() {//There is no parameter here???
 		this.board = new Board();
 		this.player1 = new Player(Color.BLACK);
@@ -263,7 +259,7 @@ import java.util.ArrayList;
 	/*
 	 * Getters and Setters
 	 */
-	public Player getPlayer1() {//TODO Kevin, tell me why we need num players about instead of a player flag if there are only 2?
+	public Player getPlayer1() {
 		return player1;
 	}
 	
