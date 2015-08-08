@@ -17,8 +17,9 @@ public class Board {
 
 	/**
 	 * Moves a Piece on the Board from one Position to another.
-	 * @param startingPosition	The starting Position of the Piece to be moved.
+	 * @param startingPosition The starting Position of the Piece to be moved.
 	 * @param endingPosition The Position for the Piece to be moved to.
+	 * @throws InvalidMoveException
 	 */
 	public void movePiece(Position startingPosition, Position endingPosition) throws InvalidMoveException {
 			endingPosition.addPiece(startingPosition.getPiece());
@@ -40,6 +41,9 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * Removes all Pieces from the board.
+	 */
 	public void clear() {
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
@@ -47,32 +51,4 @@ public class Board {
 			}
 		}
 	}
-
-	/*
-	// Setting up the board will be handled by the Game class, so that we can reuse the Board for other games if we want.
-	public void Start(){
-		for(int i=0;i<8;i++){
-			for(int j=0;j<8;j++){
-				if(i==0 && j%2==0){
-					squares[i][j]=0;
-				}
-				else if(i==1 && j%2==1){
-					squares[i][j]=0;
-				}
-				else if(i==6 && j%2==0){
-					squares[i][j]=1;
-				}
-				else if(i==7 && j%2==1){
-					squares[i][j]=1;
-				}
-				else{
-					squares[i][j]=-1;
-				}
-				System.out.print("[" + squares[i][j] + "]"); //Don't worry, this is for testing only.
-			}
-			System.out.println(""); //I will remove as soon as I'm sure the board has correctly created.
-		}
-	}
-	*/
-
 }

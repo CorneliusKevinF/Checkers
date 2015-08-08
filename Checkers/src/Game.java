@@ -25,6 +25,10 @@ import java.util.ArrayList;
 		this.activePlayer = player1;
 	}
 	
+	/**
+	 * Sets up the Board for a standard Checkers game.
+	 * @throws InvalidPositionException
+	 */
 	public void stageBoard() throws InvalidPositionException {
 		// Set the BLACK Pieces.
 		for(int i = 0; i < 8; i += 2) {
@@ -47,7 +51,6 @@ import java.util.ArrayList;
 	 * return boolean indicating success or failure.
 	 * @param player The Player attempting the move.
 	 * @param route An ArrayList of Positions to be traversed.
-	 * @return 
 	 * @throws InvalidMoveException
 	 * @throws InvalidPositionException
 	 */
@@ -98,9 +101,11 @@ import java.util.ArrayList;
 			}
 		}
 	}
-
+	
 	/**
 	 * Checks if the given start and end positions for a move are valid for a Pawn.
+	 * @param route An ArrayList of Positions to be traversed.
+	 * @return A boolean indicating the validity of the move.
 	 */
 	private boolean isValidPawnMove(ArrayList<Position> route) {
 		int directionModifier;
@@ -120,6 +125,8 @@ import java.util.ArrayList;
 	
 	/**
 	 * Checks if the given start and end positions for a move are valid for a King.
+	 * @param route An ArrayList of Positions to be traversed.
+	 * @return A boolean indicating the validity of the move.
 	 */
 	private boolean isValidKingMove(ArrayList<Position> route) {
 		Position currentPosition = route.get(0);
