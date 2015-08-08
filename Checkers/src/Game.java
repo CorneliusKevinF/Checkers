@@ -99,6 +99,8 @@ import java.util.ArrayList;
 					changeActivePlayer();
 				}
 			}
+		} else {
+			throw new InvalidMoveException("Move is not valid.");
 		}
 	}
 	
@@ -172,6 +174,30 @@ import java.util.ArrayList;
 			if(!validity) return validity;
 		}
 		
+		// TODO Finish Mandatory Jump Code 
+		/* This needs to be a seperate function.
+		currentPosition = route.get(route.size() - 1);
+		try { 
+			nextPosition = board.getPosition(currentPosition.getX() + 2, currentPosition.getY() + (2 * directionModifier));
+			
+			ArrayList<Position> manditoryJumpRoute = new ArrayList<Position>();
+			manditoryJumpRoute.add(currentPosition);
+			manditoryJumpRoute.add(nextPosition);
+			
+			validity = !isValidPawnJump(board, manditoryJumpRoute);
+		} catch (InvalidPositionException e) {}
+		
+		try {
+			nextPosition = board.getPosition(currentPosition.getX() - 2, currentPosition.getY() + (2 * directionModifier));
+			
+			ArrayList<Position> manditoryJumpRoute = new ArrayList<Position>();
+			manditoryJumpRoute.add(currentPosition);
+			manditoryJumpRoute.add(nextPosition);
+			
+			validity = !isValidPawnJump(board, manditoryJumpRoute);
+		} catch (InvalidPositionException e) {}
+		*/
+		
 		return validity;
 	}
 	
@@ -242,7 +268,7 @@ import java.util.ArrayList;
 		}
 		catch(InvalidPositionException e){
 			throw new InvalidPositionException ("This is not a valid Position.", e);
-		}//TODO Kevin look at this to see what I added.
+		}//TODO I'm really not sure if this does anything. I'm pretty sure re-throwing the Exception is pointless.
 		
 	}
 	
@@ -256,10 +282,7 @@ import java.util.ArrayList;
 			this.activePlayer = this.player1;
 		}
 		
-		//TODO Remove after debugging (Kevin use this instead becasue it shows up as a blue line over here ->
-		/*
-		 * Debug Section: Will comment out or delete later.
-		 */
+		//TODO Remove after debugging
 		System.out.println("Acitive player has ID: " + this.activePlayer.getID());
 	}
 	
