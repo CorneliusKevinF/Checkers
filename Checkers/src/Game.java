@@ -283,7 +283,7 @@ import java.util.ArrayList;
 		}
 		
 		//TODO Remove after debugging
-		System.out.println("Acitive player has ID: " + this.activePlayer.getID());
+		// System.out.println("Active player has ID: " + this.activePlayer.getID());
 	}
 	
 	/*

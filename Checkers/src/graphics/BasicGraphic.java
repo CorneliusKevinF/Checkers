@@ -1,7 +1,7 @@
 package graphics;
 
 import javax.swing.JFrame;
-
+import java.awt.Frame;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
@@ -13,15 +13,28 @@ public class BasicGraphic extends JFrame {
     }
 
     private void initUI() {
-
+    	Toolkit toolkit = Toolkit.getDefaultToolkit();
+    	Dimension size; 
+    	
         add(new Surface());
 
         setTitle("Simple Java 2D example");
         
-        // Set's the size of the window to be the size of the screen. 
-        // TODO Set the window to fullscreen mode.
-        Dimension size = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize(size);
+        // Make the window the size of the screen.
+        size = Toolkit.getDefaultToolkit().getScreenSize();
+        setSize(new Dimension(400, 400));
+        
+        size = getSize();
+        
+        /*
+        // Maximize the window.
+    	if(toolkit.isFrameStateSupported(Frame.MAXIMIZED_BOTH)) {
+    		setExtendedState(Frame.MAXIMIZED_BOTH);
+    	}
+		*/
+        
+        System.out.println("Height: " + size.getHeight() + "\nWidth: " + size.getWidth());
+        
         
         // This disallows the window from being resized.
         setMinimumSize(size);

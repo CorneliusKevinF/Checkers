@@ -8,9 +8,13 @@ import javax.swing.BorderFactory;
 
 public class GraphicsTest {
 	public static void createAndShowFrame() {
+		
+		/*
 		// Create a new frame and configure the close button.
 		JFrame frame = new JFrame("Exit");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		*/
+		
 		
 		/* Create a menu bar.
 		JMenuBar menuBar = new JMenuBar();
@@ -19,6 +23,7 @@ public class GraphicsTest {
 		menuBar.setPreferredSize(new Dimension(175, 20));
 		*/
 		
+		/*
 		// Create a label.
 		JLabel emptyLabel = new JLabel("");
 		emptyLabel.setPreferredSize(new Dimension(175, 100));
@@ -29,6 +34,9 @@ public class GraphicsTest {
 		// Display the frame.
 		frame.pack();
 		frame.setVisible(true);
+		
+		frame.toFront(); 
+		*/
 	}
 	
     public static void main(String[] args) {
@@ -37,10 +45,9 @@ public class GraphicsTest {
 
             @Override
             public void run() {
-
-				createAndShowFrame();
                 BasicGraphic bg = new BasicGraphic();
                 bg.setVisible(true);
+				//createAndShowFrame();
             }
         });
     }

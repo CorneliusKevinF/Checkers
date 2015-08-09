@@ -94,7 +94,6 @@ public class Test {
 			
 			while (!input.equals("EXIT")) {
 				route = new ArrayList<Position>();
-				System.out.println("Active Player: " + testGame.getActivePlayer().getID());
 				printBoard(testBoard);
 				
 				System.out.println("\nEnter a Move.");
@@ -128,7 +127,19 @@ public class Test {
 	private static void printBoard(Board board) throws InvalidPositionException{
 		Position tempPosition;
 		
-		System.out.println("Printing Board:\n  --------------------------------- ");
+		try {
+			String os = System.getProperty("os.name");
+			
+			if(os.contains("Windows")) {
+				Runtime.getRuntime().exec("cls");
+			} else {
+				Runtime.getRuntime().exec("clear");
+			}
+		} catch (Exception e) {
+			
+		}
+		
+		System.out.println("  --------------------------------- ");
 		
 		for(int i = 7; i >= 0; i--) {
 			System.out.print(i + " ");

@@ -12,8 +12,20 @@ class Surface extends JPanel {
     private void doDrawing(Graphics g) {    
     	
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(new Color(127, 0, 127));
-        g2d.fillRect(5, 5, 290, 190);
+        
+        for(int i = 0; i < 8; i++) {
+        	
+        	for(int j = 0; j < 8; j++) {
+        		
+        		if(((i + j) % 2) == 0) {
+        			g2d.setColor(Color.RED);
+        		} else {
+        			g2d.setColor(Color.BLACK);
+        		}
+        	
+        		g2d.fillRect(i * 50, j * 50, 50, 50);
+        	}
+        }
     }
 
     @Override
