@@ -46,7 +46,6 @@ public class GraphicsTest {
             @Override
             public void run() {
             	Game game = new Game();
-            	game.getFrame().setVisible(true);
             	/*
                 BasicGraphic bg = new BasicGraphic();
                 bg.setVisible(true);
@@ -54,7 +53,7 @@ public class GraphicsTest {
 				
 				//createAndShowFrame();
             	
-            	// game.getBoard().addPiece(1, 1, Color.BLACK);
+            	game.getBoard().addPiece(1, 1, Color.BLACK);
             }
         });
     }

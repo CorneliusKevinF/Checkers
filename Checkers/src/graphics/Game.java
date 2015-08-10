@@ -46,9 +46,12 @@ public class Game {
                 board.getTimer().stop();
             }
         });
+
         
-	            }
-	        });
+        
+        frame.setVisible(true);
+            }
+        });
 	}
 	
 	public JFrame getFrame() {
