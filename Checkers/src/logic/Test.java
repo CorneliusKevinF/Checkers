@@ -1,5 +1,6 @@
 package logic;
 import java.util.ArrayList;
+import java.awt.Color;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -127,7 +128,7 @@ public class Test {
 	 */
 	private static void printBoard(Board board) throws InvalidPositionException{
 		Position tempPosition;
-		
+		Color color;
 		try {
 			String os = System.getProperty("os.name");
 			
@@ -148,24 +149,22 @@ public class Test {
 				tempPosition = board.getPosition(j, i);
 				if(tempPosition.hasPiece()) {
 					Piece pieceToMove = tempPosition.getPiece();
-					switch(pieceToMove.getColor()) {
-						case BLACK:
-							if(pieceToMove.isKing()) {
-								System.out.print("| B ");
-							} else {
-								System.out.print("| b ");
-							}
-							break;
-						case RED:
-							if(pieceToMove.isKing()) {
-								System.out.print("| R ");
-							} else {
-								System.out.print("| r ");
-							}
-							break;
-						default:
+					color = pieceToMove.getColor();
+
+					if(color == Color.BLACK) {
+						if(pieceToMove.isKing()) {
+							System.out.print("| B ");
+						} else {
+							System.out.print("| b ");
+						}
+					} else if(color == Color.RED) {
+						if(pieceToMove.isKing()) {
+							System.out.print("| R ");
+						} else {
+							System.out.print("| r ");
+						}
+					} else {
 							System.out.print("| E ");
-							break;
 					}
 				} else {
 					System.out.print("|   ");

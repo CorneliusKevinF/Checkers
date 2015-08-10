@@ -33,4 +33,8 @@ public class Piece extends JPanel {
 		graphics.drawOval(x, y, 40, 40);
 		System.out.println("Piece Drawn!");
 	}
+	
+	public Color getColor() {
+		return color;
+	}
 }

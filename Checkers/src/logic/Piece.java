@@ -1,4 +1,7 @@
 package logic;
+
+import java.awt.Color;
+
 /**
  * Piece Class
  * @author Robert Dvorscak

@@ -49,4 +49,12 @@ public class Position extends JPanel {
 		this.piece = null;
 		repaint();
 	}
+	
+	public boolean hasPiece() {
+		return !(piece == null);
+	}
+	
+	public Piece getPiece() {
+		return piece;
+	}
 }

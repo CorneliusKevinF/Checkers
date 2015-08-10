@@ -1,5 +1,6 @@
 package logic;
 import java.util.ArrayList;
+import java.awt.Color;
 
 /**
  * <p>
@@ -19,11 +20,17 @@ import java.util.ArrayList;
 	private Board board;
 	private Player player1, player2, activePlayer;
 	
-	public Game() {//There is no parameter here???
+	//TODO TBR
+	private graphics.Game game;
+	
+	public Game() {
 		this.board = new Board();
 		this.player1 = new Player(Color.BLACK);
 		this.player2 = new Player(Color.RED);
 		this.activePlayer = player1;
+		
+		//TODO TBR
+		game = new graphics.Game();
 	}
 	
 	/**
@@ -44,6 +51,10 @@ import java.util.ArrayList;
 				this.board.getPosition(i + (j % 2), j).addPiece(new Piece(Color.RED));
 			}
 		}
+		
+		//TODO TBR
+		
+		game.updateBoard(board);
 	}
 	
 	/**
@@ -103,6 +114,9 @@ import java.util.ArrayList;
 		} else {
 			throw new InvalidMoveException("Move is not valid.");
 		}
+		
+		//TBR
+		game.updateBoard(board);
 	}
 	
 	/**

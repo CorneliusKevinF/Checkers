@@ -54,7 +54,7 @@ public class GraphicsTest {
 				
 				//createAndShowFrame();
             	
-            	game.getBoard().addPiece(1, 1, Color.BLACK);
+            	// game.getBoard().addPiece(1, 1, Color.BLACK);
             }
         });
     }
