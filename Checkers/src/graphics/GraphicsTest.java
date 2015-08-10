@@ -45,15 +45,18 @@ public class GraphicsTest {
 
             @Override
             public void run() {
-            	Game game = new Game();
+            	Game game = new Game();//This was running, and before the game could do..., the rest of this was running and assuming that the board was complete. Make sense?
             	/*
                 BasicGraphic bg = new BasicGraphic();
                 bg.setVisible(true);
 				*/
 				
 				//createAndShowFrame();
-            	
-            	game.getBoard().addPiece(1, 1, Color.BLACK);
+            	game.addPiece(1, 1, Color.BLACK);
+            	game.board.removePiece(1, 1);
+            	game.addPiece(1, 1, Color.BLACK);
+            	game.board.removePiece(1, 1);
+            	//game.newGame();
             }
         });
     }

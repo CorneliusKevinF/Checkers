@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 public class Position extends JPanel {
 	int x, y;
 	Piece piece;
+	int timesDrawn;
 	
 	public Position(int x, int y) {
 		super();
@@ -17,6 +18,7 @@ public class Position extends JPanel {
 		this.y = y;
 		piece = null;
 		setOpaque(true);
+		timesDrawn = 0;
 	}
 	
 	@Override
@@ -26,7 +28,12 @@ public class Position extends JPanel {
 		Graphics2D graphics = (Graphics2D) g;
 		
 		if(((x + y) % 2) == 0) {
-			graphics.setColor(Color.RED);
+			if(timesDrawn%2==0){
+				graphics.setColor(Color.BLUE);
+			}
+			else{
+				graphics.setColor(Color.RED);
+			}
 		} else {
 			graphics.setColor(Color.BLACK);
 		}
@@ -37,6 +44,7 @@ public class Position extends JPanel {
 			System.out.println("Drawing a Piece at: (" + x + ", " + y + ")");
 			piece.paintComponent(graphics, (50 * x) + 25 + 5, (50 * y) + 25 + 5);
 		}
+		timesDrawn++;
 	}
 	
 	//TODO not working, can't paint the piece.

@@ -13,11 +13,10 @@ import javax.swing.Timer;
 public class Board extends JPanel implements ActionListener {
    
 	Position[][] positions;
-	static int ID = 1;
-	
+	static int ID = 1;	
 	
 	//TODO Remove test code. 
-    private final int DELAY = 150;
+    private final int DELAY = 5000;
 	Timer timer;
 	
 	
@@ -48,6 +47,7 @@ public class Board extends JPanel implements ActionListener {
 		
 		
 		//TODO Remove test code.
+		repaint();
         timer = new Timer(DELAY, this);
         timer.start();
 		
@@ -61,7 +61,7 @@ public class Board extends JPanel implements ActionListener {
 		
 		Graphics2D graphics = (Graphics2D) g;
 		
-		graphics.setColor(Color.WHITE);
+		graphics.setColor(Color.CYAN);
 		System.out.println("Board #" + ID + "'s Dimensions\nHeight: " + getHeight() + "\nWidth: " + getWidth());
 		graphics.fillRect(0, 0, getWidth(), getHeight());
 		
@@ -96,6 +96,6 @@ public class Board extends JPanel implements ActionListener {
 	// TODO Remove after testing.
     @Override
     public void actionPerformed(ActionEvent e) {
-        repaint();
+    	repaint();
     }
 }
