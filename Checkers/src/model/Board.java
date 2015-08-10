@@ -1,3 +1,4 @@
+package model;
 /**
  * The Board class is an 8x8 array of Positions. It does nothing more than hold pieces.
  * @author Kevin Cornelius

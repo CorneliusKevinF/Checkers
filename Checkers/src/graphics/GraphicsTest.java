@@ -45,8 +45,13 @@ public class GraphicsTest {
 
             @Override
             public void run() {
+            	Game game = new Game();
+            	
+            	/*
                 BasicGraphic bg = new BasicGraphic();
                 bg.setVisible(true);
+				*/
+				
 				//createAndShowFrame();
             }
         });

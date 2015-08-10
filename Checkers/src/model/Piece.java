@@ -1,3 +1,4 @@
+package model;
 /**
  * Piece Class
  * @author Robert Dvorscak

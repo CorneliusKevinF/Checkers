@@ -1,3 +1,4 @@
+package model;
 @SuppressWarnings("serial")
 public class InvalidPositionException extends Exception {
 
