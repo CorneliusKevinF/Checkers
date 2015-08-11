@@ -23,16 +23,8 @@ public class Game {
 		
 		frame.getContentPane().setSize(board.getSize());
 		frame.add(board);
-		
-		
-		
-		// TODO Fix: This is meant to resize the window to fit it's contents exactly 
 		frame.pack();
-		//frame.getContentPane().setSize(board.getSize());
-		//frame.setSize(board.getSize());
-		System.out.println("JFrame Dimensions\nHeight: " + frame.getHeight() + "\nWidth: " + frame.getWidth());
-
-		//setResizable(false);
+		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
