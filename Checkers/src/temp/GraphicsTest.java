@@ -6,7 +6,9 @@ import view.*;
 
 public class GraphicsTest {	
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
+        
+    	/*
+    	EventQueue.invokeLater(new Runnable() {
 
             @Override
             public void run() {
@@ -23,14 +25,26 @@ public class GraphicsTest {
             	}
             	
             	gameView.getFrame().repaint();
-            	/*
-                BasicGraphic bg = new BasicGraphic();
-                bg.setVisible(true);
-				*/
-				
-				//createAndShowFrame();
             }
         });
-        
+        */
+    	
+    	GameView gameView = new GameView();
+    	
+    	try {
+    	Thread.sleep(5000);
+    	} catch (InterruptedException e) {
+    		
+    	}
+    	
+		Game game = new Game();
+    	game.addObserver(gameView);
+    	try {
+    		game.stageBoard();
+    	} catch (InvalidPositionException e) {
+    		
+    	}
     }
+    	
+    	
 }

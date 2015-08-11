@@ -34,10 +34,12 @@ public class GameView implements Observer {
 		int screenHeight = (int) screenSize.getHeight();
 		
         frame.setLocation((int) ((screenWidth - frame.getWidth()) / 2), (int) ((screenHeight - frame.getHeight()) / 2));
+        
+        System.out.println("GameView instantiated.");
 	}
 
 	@Override
-	public void update(Observable observerable, Object observed) {
+	public void update(Observable observable, Object observed) {
 		model.Position position = (model.Position) observed;
 		
 		System.out.println("Position: (" + position.getX() + ", " + position.getY() + ") updating...");

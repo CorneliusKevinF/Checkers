@@ -39,6 +39,7 @@ import java.util.Observable;
 			for(int j = 0; j < 3; j++) { 
 				position = this.board.getPosition(i + (j % 2), j);
 				position.addPiece(new Piece(Color.BLACK));
+				System.out.println("Attempting to notify observers...");
 				notifyObservers(position);
 			}
 		}
@@ -48,6 +49,7 @@ import java.util.Observable;
 			for(int j = 5; j < 8; j++) { 
 				position = this.board.getPosition(i + (j % 2), j);
 				position.addPiece(new Piece(Color.RED));
+				System.out.println("Attempting to notify observers...");
 				notifyObservers(position);
 			}
 		}
