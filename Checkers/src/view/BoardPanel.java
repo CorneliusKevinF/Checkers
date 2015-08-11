@@ -6,7 +6,7 @@ import java.awt.*;
 @SuppressWarnings("serial")
 public class BoardPanel extends JPanel {
 	private int sideLength;
-	private PositionPanel[] positionPanels;
+	private PositionPanel[][] positionPanels;
 	
 	public BoardPanel(Insets insets) {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -22,6 +22,19 @@ public class BoardPanel extends JPanel {
 		setMinimumSize(new Dimension(sideLength, sideLength));
 		setMaximumSize(new Dimension (sideLength, sideLength));
 		setSize(new Dimension(sideLength, sideLength));
+		
+		
+		positionPanels = new PositionPanel[8][8];
+		int positionSideLength = (int) (sideLength / 9);
+		int x, y; 
+		
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 8; j++) {
+				x = (int) ((i * positionSideLength) + (positionSideLength / 2));
+				y = (int) ((j * positionSideLength) + (positionSideLength / 2));
+				positionPanels[i][j] = new PositionPanel(x, y, positionSideLength);
+			}
+		}
 	}
 	
 	public void update(int x, int y) {
