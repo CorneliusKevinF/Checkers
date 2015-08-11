@@ -1,8 +1,6 @@
 package model;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
+import java.util.*;
+import java.util.regex.*;
 
 //TODO Find out why I keep getting error when trying to run. Unsupported major.minor
 /**

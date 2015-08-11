@@ -1,5 +1,6 @@
 package model;
 import java.util.ArrayList;
+import java.util.Observable;
 
 /**
  * <p>
@@ -15,7 +16,7 @@ import java.util.ArrayList;
  * <p>
  * @author Kevin Cornelius
  */
- public class Game {
+ public class Game extends Observable {
 	private Board board;
 	private Player player1, player2, activePlayer;
 	
@@ -58,35 +59,50 @@ import java.util.ArrayList;
 	public void move(Player player, ArrayList<Position> route) throws InvalidMoveException, InvalidPositionException {
 		
 		Position startingPosition = route.get(0);
-		// Position endingPosition = route.get(route.size() - 1);
 		
 		if(activePlayer.getID() == player.getID() 
 				&& startingPosition.hasPiece()
 				&& (startingPosition.getPiece().getColor() == player.getColor())
 				&& (route.size() >= 2)) {
-
+			
+			
 			if(startingPosition.getPiece().isKing()) {
-				if((route.size() == 2) && isValidKingMove(route) && !route.get(1).hasPiece()) {
+				if(isValidKingMove(route)) {
 					
 					board.movePiece(startingPosition, route.get(1));
 					changeActivePlayer();
 					
-				} else if(isValidKingJump(board, route)) {
+					//TODO Finish Observable implementation
+					notifyObservers(startingPosition);
+					notifyObservers(route.get(1));
+				} else
+					// This tests 
+					if(isValidKingJump(board, route)) {
 					
 					ArrayList<Position> jumpedPositions = getJumpedPositions(this.board, route);
 
 					for (Position jumpedPosition : jumpedPositions) {
-						jumpedPosition.removePiece();			
+						jumpedPosition.removePiece();
+						
+						//TODO Finish Observable implementation
+						notifyObservers(jumpedPosition);
 					}			
 					
 					this.board.movePiece(startingPosition, route.get(route.size() - 1));
 					changeActivePlayer();
-				}
-			} else {
-				if((route.size() == 2) && isValidPawnMove(route) && !route.get(1).hasPiece()) {
+
+					//TODO Finish Observable implementation
+					notifyObservers(startingPosition);
+					notifyObservers(route.get(route.size() - 1));
 					
+				}
+			} else if(isValidPawnMove(route)) {
 					board.movePiece(startingPosition, route.get(1));
 					changeActivePlayer();
+
+					//TODO Finish Observable implementation
+					notifyObservers(startingPosition);
+					notifyObservers(route.get(1));
 					
 				} else if (isValidPawnJump(board, route)) {
 					
@@ -94,11 +110,17 @@ import java.util.ArrayList;
 					
 					for (Position jumpedPosition : jumpedPositions) {
 						jumpedPosition.removePiece();
+						
+						//TODO Finish Observable implementation
+						notifyObservers(jumpedPosition);
 					}
 					
 					this.board.movePiece(startingPosition, route.get(route.size() - 1));
 					changeActivePlayer();
-				}
+
+					//TODO Finish Observable implementation
+					notifyObservers(startingPosition);
+					notifyObservers(route.get(route.size() -1));
 			}
 		} else {
 			throw new InvalidMoveException("Move is not valid.");
@@ -121,9 +143,11 @@ import java.util.ArrayList;
 			directionModifier = -1;
 		}
 		
-		return ((nextPosition.getY() == (currentPosition.getY() + directionModifier)) 
+		return ((route.size() == 2)
+				&& !route.get(1).hasPiece()
+				&& ((nextPosition.getY() == (currentPosition.getY() + directionModifier)) 
 				&& ((nextPosition.getX() == (currentPosition.getX() + 1))
-				|| (nextPosition.getX() == (currentPosition.getX() - 1))));
+				|| (nextPosition.getX() == (currentPosition.getX() - 1)))));
 	}
 	
 	/**
@@ -135,10 +159,13 @@ import java.util.ArrayList;
 		Position currentPosition = route.get(0);
 		Position nextPosition = route.get(1);
 		
-		return (((nextPosition.getX() == (currentPosition.getX() + 1)) 
+		return ((route.size() == 2)
+				&& !route.get(1).hasPiece()
+				&& (((nextPosition.getX() == (currentPosition.getX() + 1)) 
 				|| (nextPosition.getX() == (currentPosition.getX() - 1)))
+				
 				&& ((nextPosition.getY() == (currentPosition.getY() + 1))
-				|| (nextPosition.getY() == (currentPosition.getY() - 1))));
+				|| (nextPosition.getY() == (currentPosition.getY() - 1)))));
 	}
 	
 	/**
