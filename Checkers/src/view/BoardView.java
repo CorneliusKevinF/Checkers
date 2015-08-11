@@ -8,19 +8,19 @@ public class BoardView extends JPanel {
 	private int sideLength;
 	
 	public BoardView() {
-			super();
-			
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int screenWidth = (int) screenSize.getWidth();
 		int screenHeight = (int) screenSize.getHeight();
 		
-		if (screenWidth > screenHeight) {
+		if (screenWidth < screenHeight) {
 			sideLength = screenWidth;
 		} else {
 			sideLength = screenHeight;
 		}
 		
-		setSize(sideLength, sideLength);
+		setMinimumSize(new Dimension(sideLength, sideLength));
+		setMaximumSize(new Dimension (sideLength, sideLength));
+		setSize(new Dimension(sideLength, sideLength));
 	}
 	
 	@Override
@@ -28,7 +28,7 @@ public class BoardView extends JPanel {
 		super.paintComponent(g);
 		Graphics2D graphics = (Graphics2D) g;
 		
-		graphics.setColor(Color.WHITE);
+		graphics.setColor(Color.CYAN);
 		graphics.fillRect(0, 0, sideLength, sideLength);
 	}
 }
