@@ -1,15 +1,9 @@
 package graphics;
 
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.HeadlessException;
+import java.awt.*;
+import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import javax.swing.JFrame;
-
-import logic.InvalidPositionException;
-import logic.Piece;
 
 /**
  * 
@@ -18,17 +12,16 @@ import logic.Piece;
  */
 // @SuppressWarnings("serial")
 public class Game {
-	JFrame frame;
 	Board board;
 	
-	public Game() throws HeadlessException {
+	public Game() {
 
-		frame = new JFrame();
-		frame.setTitle("CD Checkers");
+		JFrame frame = new JFrame("Checkers");
 		frame.setLayout(null);
 		
 		board = new Board();
 		
+		frame.getContentPane().setSize(board.getSize());
 		frame.add(board);
 		
 		
@@ -52,16 +45,16 @@ public class Game {
             
         });
 
-        
+        Dimension contentSize = board.getSize();
+        Insets insets = frame.getInsets();
         
         frame.setVisible(true);
+        
+        frame.setSize(new Dimension((int) contentSize.getWidth() + insets.left + insets.right, (int) contentSize.getHeight() + insets.top + insets.bottom));
+        frame.setLocation((int) (frame.getLocation().getX() - (frame.getWidth() / 2)), (int) (frame.getLocation().getY() - (frame.getHeight() / 2)));
 	}
 
-	
-	public JFrame getFrame() {
-		return frame;
-	}
-	
+
 	public Board getBoard() {
 		System.out.println("Getting and casting the Board.");
 		
