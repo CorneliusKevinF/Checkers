@@ -1,6 +1,7 @@
 package model;
 import java.util.*;
 import java.util.regex.*;
+import java.awt.*;
 
 //TODO Find out why I keep getting error when trying to run. Unsupported major.minor
 /**
@@ -146,22 +147,20 @@ public class Test {
 				tempPosition = board.getPosition(j, i);
 				if(tempPosition.hasPiece()) {
 					Piece pieceToMove = tempPosition.getPiece();
-					switch(pieceToMove.getColor()) {
-						case BLACK:
+					Color c = pieceToMove.getColor();
+					if (c == Color.BLACK) {
 							if(pieceToMove.isKing()) {
 								System.out.print("| B ");
 							} else {
 								System.out.print("| b ");
 							}
-							break;
-						case RED:
+					} else if (c == Color.RED) {
 							if(pieceToMove.isKing()) {
 								System.out.print("| R ");
 							} else {
 								System.out.print("| r ");
 							}
-							break;
-						default:
+					} else {
 							System.out.print("| E ");
 							break;
 					}

@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import model.Position;
 
 @SuppressWarnings("serial")
 public class BoardPanel extends JPanel {
@@ -44,9 +45,15 @@ public class BoardPanel extends JPanel {
 			}
 		}
 	}
-	
-	public void update(int x, int y) {
-		positionPanels[x][y].repaint();
+
+	public void update(Position position) {
+		PositionPanel positionPanel = positionPanels[position.getX()][7 - position.getY()];
+		
+		if(position.hasPiece()) {
+			positionPanel.addPiece(position.getPiece().getColor());
+		} else {
+			positionPanel.removePiece();
+		}
 	}
 	
 	@Override

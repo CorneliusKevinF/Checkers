@@ -1,6 +1,7 @@
 package model;
 import java.util.ArrayList;
 import java.util.Observable;
+import java.awt.Color;
 
 /**
  * <p>
@@ -40,6 +41,7 @@ import java.util.Observable;
 				position = this.board.getPosition(i + (j % 2), j);
 				position.addPiece(new Piece(Color.BLACK));
 				System.out.println("Attempting to notify observers...");
+				setChanged();
 				notifyObservers(position);
 			}
 		}
@@ -50,6 +52,7 @@ import java.util.Observable;
 				position = this.board.getPosition(i + (j % 2), j);
 				position.addPiece(new Piece(Color.RED));
 				System.out.println("Attempting to notify observers...");
+				setChanged();
 				notifyObservers(position);
 			}
 		}
@@ -81,7 +84,9 @@ import java.util.Observable;
 					changeActivePlayer();
 					
 					//TODO Finish Observable implementation
+					setChanged();
 					notifyObservers(startingPosition);
+					setChanged();
 					notifyObservers(route.get(1));
 				} else
 					// This tests 
@@ -93,6 +98,7 @@ import java.util.Observable;
 						jumpedPosition.removePiece();
 						
 						//TODO Finish Observable implementation
+						setChanged();
 						notifyObservers(jumpedPosition);
 					}			
 					
@@ -100,7 +106,9 @@ import java.util.Observable;
 					changeActivePlayer();
 
 					//TODO Finish Observable implementation
+					setChanged();
 					notifyObservers(startingPosition);
+					setChanged();
 					notifyObservers(route.get(route.size() - 1));
 					
 				}
@@ -109,7 +117,9 @@ import java.util.Observable;
 					changeActivePlayer();
 
 					//TODO Finish Observable implementation
+					setChanged();
 					notifyObservers(startingPosition);
+					setChanged();
 					notifyObservers(route.get(1));
 					
 				} else if (isValidPawnJump(board, route)) {
@@ -120,6 +130,7 @@ import java.util.Observable;
 						jumpedPosition.removePiece();
 						
 						//TODO Finish Observable implementation
+						setChanged();
 						notifyObservers(jumpedPosition);
 					}
 					
@@ -127,7 +138,9 @@ import java.util.Observable;
 					changeActivePlayer();
 
 					//TODO Finish Observable implementation
+					setChanged();
 					notifyObservers(startingPosition);
+					setChanged();
 					notifyObservers(route.get(route.size() -1));
 			}
 		} else {

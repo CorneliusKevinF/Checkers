@@ -34,7 +34,9 @@ public class PositionPanel extends JPanel {
 	}
 	
 	public void addPiece(Color color) {
-		piecePanel = new PiecePanel((int) (x + (sideLength / 2)), (int) (y + (sideLength / 2)), (int) (sideLength * .8), color);
+		System.out.println("Adding a piece at position (" + x + ", " + y + ").");
+		
+		piecePanel = new PiecePanel((int) (x + (sideLength * .1)), (int) (y + (sideLength * .1)), (int) (sideLength * .8), color);
 	}
 
 	public void removePiece() {

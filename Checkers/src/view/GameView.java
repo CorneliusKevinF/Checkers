@@ -44,8 +44,9 @@ public class GameView implements Observer {
 		
 		System.out.println("Position: (" + position.getX() + ", " + position.getY() + ") updating...");
 		
-		boardPanel.update(position.getX(), position.getY());
 		
+		// Not sure if the view should be calling these methods. I think it breaks some MVC rules.
+		boardPanel.update(position);
 	}
 	
 	public JFrame getFrame() {

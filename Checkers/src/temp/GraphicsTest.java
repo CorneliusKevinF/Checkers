@@ -34,9 +34,8 @@ public class GraphicsTest {
     	try {
     	Thread.sleep(5000);
     	} catch (InterruptedException e) {
-    		
+    		System.out.println("Sleep interrupted.");
     	}
-    	
 		Game game = new Game();
     	game.addObserver(gameView);
     	try {
@@ -44,6 +43,9 @@ public class GraphicsTest {
     	} catch (InvalidPositionException e) {
     		
     	}
+    	
+    	gameView.getFrame().revalidate();
+    	//gameView.getFrame().repaint();
     }
     	
     	
