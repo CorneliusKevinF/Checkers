@@ -32,17 +32,23 @@ import java.util.Observable;
 	 * @throws InvalidPositionException
 	 */
 	public void stageBoard() throws InvalidPositionException {
+		Position position;
+		
 		// Set the BLACK Pieces.
 		for(int i = 0; i < 8; i += 2) {
 			for(int j = 0; j < 3; j++) { 
-				this.board.getPosition(i + (j % 2), j).addPiece(new Piece(Color.BLACK));
+				position = this.board.getPosition(i + (j % 2), j);
+				position.addPiece(new Piece(Color.BLACK));
+				notifyObservers(position);
 			}
 		}
 		
 		// Set the RED Pieces.
 		for(int i = 0; i < 8; i += 2) {
 			for(int j = 5; j < 8; j++) { 
-				this.board.getPosition(i + (j % 2), j).addPiece(new Piece(Color.RED));
+				position = this.board.getPosition(i + (j % 2), j);
+				position.addPiece(new Piece(Color.RED));
+				notifyObservers(position);
 			}
 		}
 	}

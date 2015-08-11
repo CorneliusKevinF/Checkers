@@ -20,6 +20,8 @@ public class PiecePanel extends JPanel {
 		super.paintComponent(g);
 		Graphics2D graphics = (Graphics2D) g;
 		
+		System.out.println("Painting a piece at : (" + x + ", " + y + ").");
+		
 		graphics.setColor(color);
 		graphics.fillOval(x, y, diameter, diameter);		
 		graphics.setColor(Color.WHITE);

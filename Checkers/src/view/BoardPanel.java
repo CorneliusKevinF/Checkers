@@ -46,7 +46,7 @@ public class BoardPanel extends JPanel {
 	}
 	
 	public void update(int x, int y) {
-		
+		positionPanels[x][y].repaint();
 	}
 	
 	@Override

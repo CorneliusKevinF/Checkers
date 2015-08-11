@@ -6,11 +6,12 @@ import java.util.*;
 
 public class GameView implements Observer {
 	BoardPanel boardPanel;
+	JFrame frame;
 	
 	public GameView() {
 		//TODO Position and size of Frame still aren't perfect. Learn how to better manipulate JFrames.
 		
-		JFrame frame = new JFrame("CD Checkers");
+		frame = new JFrame("CD Checkers");
 		frame.setLayout(null);
 
         Insets insets = frame.getInsets();
@@ -39,7 +40,13 @@ public class GameView implements Observer {
 	public void update(Observable observerable, Object observed) {
 		model.Position position = (model.Position) observed;
 		
+		System.out.println("Position: (" + position.getX() + ", " + position.getY() + ") updating...");
+		
 		boardPanel.update(position.getX(), position.getY());
 		
+	}
+	
+	public JFrame getFrame() {
+		return frame;
 	}
 }
