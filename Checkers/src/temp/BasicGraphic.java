@@ -1,9 +1,7 @@
 package temp;
 
-import javax.swing.JFrame;
-import java.awt.Frame;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import javax.swing.*;
+import java.awt.*;
 
 @SuppressWarnings("serial")
 public class BasicGraphic extends JFrame {

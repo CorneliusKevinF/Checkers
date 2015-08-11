@@ -19,7 +19,7 @@ import java.util.Observable;		//for update();
 import java.awt.event.ActionListener;	//for addController()
 
 
-class View implements java.util.Observer {
+class View2 implements java.util.Observer {
 
 	//attributes as must be visible within class
 	private TextField myTextField;
@@ -28,7 +28,7 @@ class View implements java.util.Observer {
 	//private Model model;		//Joe: Model is hardwired in, 
 					//needed only if view initialises model (which we aren't doing)
 	
-	View() {
+	View2() {
 		System.out.println("View()");	
 		
 		//frame in constructor and not an attribute as doesn't need to be visible to whole class

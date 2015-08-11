@@ -8,7 +8,9 @@ public class GameView implements Observer {
 	BoardPanel boardPanel;
 	
 	public GameView() {
-		JFrame frame = new JFrame("CD Chekcers");
+		//TODO Position and size of Frame still aren't perfect. Learn how to better manipulate JFrames.
+		
+		JFrame frame = new JFrame("CD Checkers");
 		frame.setLayout(null);
 
         Insets insets = frame.getInsets();
@@ -18,7 +20,6 @@ public class GameView implements Observer {
 		frame.add(boardPanel);
 		frame.pack();
 		frame.setResizable(false);
-		frame.setLocationRelativeTo(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         Dimension contentSize = boardPanel.getSize();
@@ -26,7 +27,12 @@ public class GameView implements Observer {
         frame.setVisible(true);
         
         frame.setSize(new Dimension((int) contentSize.getWidth() + insets.left + insets.right, (int) contentSize.getHeight() + insets.top + insets.bottom));
-        frame.setLocation((int) (frame.getLocation().getX() - (frame.getWidth() / 2)), (int) (frame.getLocation().getY() - (frame.getHeight() / 2)));
+		
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		int screenWidth = (int) screenSize.getWidth();
+		int screenHeight = (int) screenSize.getHeight();
+		
+        frame.setLocation((int) ((screenWidth - frame.getWidth()) / 2), (int) ((screenHeight - frame.getHeight()) / 2));
 	}
 
 	@Override

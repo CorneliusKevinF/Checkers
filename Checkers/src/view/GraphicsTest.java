@@ -1,10 +1,6 @@
 package view;
 
 import java.awt.*;
-import java.awt.event.*;
-import javax.swing.JFrame;
-import javax.swing.*;
-import javax.swing.BorderFactory;
 
 public class GraphicsTest {
 	public static void createAndShowFrame() {

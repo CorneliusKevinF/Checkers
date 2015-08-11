@@ -10,7 +10,7 @@ class Controller implements java.awt.event.ActionListener {
 
 	//Joe: Controller has Model and View hardwired in
 	Model model;
-	View view;
+	View2 view;
 
 	Controller() {	
 		System.out.println ("Controller()");
@@ -35,7 +35,7 @@ class Controller implements java.awt.event.ActionListener {
 		this.model = m;
 	} //addModel()
 
-	public void addView(View v){
+	public void addView(View2 v){
 		System.out.println("Controller: adding view");
 		this.view = v;
 	} //addView()
