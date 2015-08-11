@@ -35,8 +35,8 @@ public class Game {
 		
 		// TODO Fix: This is meant to resize the window to fit it's contents exactly 
 		frame.pack();
-		frame.getContentPane().setSize(board.getSize());
-		frame.setSize(board.getSize());
+		//frame.getContentPane().setSize(board.getSize());
+		//frame.setSize(board.getSize());
 		System.out.println("JFrame Dimensions\nHeight: " + frame.getHeight() + "\nWidth: " + frame.getWidth());
 
 		//setResizable(false);
