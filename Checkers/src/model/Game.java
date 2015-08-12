@@ -80,10 +80,13 @@ import java.awt.Color;
 			return;
 		}
 		
+		// TODO Right now the activePostion is set under strict conditions that guarantee the presence of a Piece of the
+		// activePlayer's Color on the request Position so this code does nothing except lookout for bugs.
 		if(!activePosition.hasPiece()) throw new InvalidMoveException("Can't move without a Piece selected.");
 		
 		ArrayList<Move> availableMoves = getAvailableMoves(activePosition);
 		int numberOfMoves = availableMoves.size();
+		System.out.println("m: There are " + numberOfMoves + " available");
 		
 		if(numberOfMoves == 0) throw new InvalidMoveException("There are no moves available for the Piece selected.");
 		
@@ -93,7 +96,7 @@ import java.awt.Color;
 			endingPosition = availableMoves.get(i).getEndingPosition();
 			
 			if(endingPosition.equals(position)) {
-				
+				System.out.println("m: (" + position.getX() + ", " + position.getY() + ") is a valid Move.");
 				board.movePiece(activePosition, endingPosition);
 				
 				// Model notifying View
@@ -127,97 +130,7 @@ import java.awt.Color;
 		
 		setActivePosition(position);
 	}
-	
-	/**
-	 * If the player presented is the active one and the move is valid
-	 * update the position of the piece, resolve any side effects, and change the active player
-	 * return boolean indicating success or failure.
-	 * @param player The Player attempting the move.
-	 * @param route An ArrayList of Positions to be traversed.
-	 * @throws InvalidMoveException Indicates an invalid move.
-	 * @throws InvalidPositionException Indicates and invalid position as accessed.
-	 */
-	public void move(Player player, ArrayList<Position> route) throws InvalidMoveException, InvalidPositionException {
-		
-		Position startingPosition = route.get(0);
-		
-		if(activePlayer.getID() == player.getID() 
-				&& startingPosition.hasPiece()
-				&& (startingPosition.getPiece().getColor() == player.getColor())
-				&& (route.size() >= 2)) {
-			
-			
-			if(startingPosition.getPiece().isKing()) {
-				if(isValidKingMove(route)) {
-					
-					board.movePiece(startingPosition, route.get(1));
-					changeActivePlayer();
-					
-					//TODO Finish Observable implementation
-					setChanged();
-					notifyObservers(startingPosition);
-					setChanged();
-					notifyObservers(route.get(1));
-				} else
-					// This tests 
-					if(isValidKingJump(board, route)) {
-					
-					ArrayList<Position> jumpedPositions = getJumpedPositions(this.board, route);
 
-					for (Position jumpedPosition : jumpedPositions) {
-						jumpedPosition.removePiece();
-						
-						//TODO Finish Observable implementation
-						setChanged();
-						notifyObservers(jumpedPosition);
-					}			
-					
-					this.board.movePiece(startingPosition, route.get(route.size() - 1));
-					changeActivePlayer();
-
-					//TODO Finish Observable implementation
-					setChanged();
-					notifyObservers(startingPosition);
-					setChanged();
-					notifyObservers(route.get(route.size() - 1));
-					
-				}
-			} else if(isValidPawnMove(route)) {
-					board.movePiece(startingPosition, route.get(1));
-					changeActivePlayer();
-
-					//TODO Finish Observable implementation
-					setChanged();
-					notifyObservers(startingPosition);
-					setChanged();
-					notifyObservers(route.get(1));
-					
-				} else if (isValidPawnJump(board, route)) {
-					
-					ArrayList<Position> jumpedPositions = getJumpedPositions(this.board, route);
-					
-					for (Position jumpedPosition : jumpedPositions) {
-						jumpedPosition.removePiece();
-						
-						//TODO Finish Observable implementation
-						setChanged();
-						notifyObservers(jumpedPosition);
-					}
-					
-					this.board.movePiece(startingPosition, route.get(route.size() - 1));
-					changeActivePlayer();
-
-					//TODO Finish Observable implementation
-					setChanged();
-					notifyObservers(startingPosition);
-					setChanged();
-					notifyObservers(route.get(route.size() -1));
-			}
-		} else {
-			throw new InvalidMoveException("Move is not valid.");
-		}
-	}
-	
 	/**
 	 * Changes the active player, so the game knows who to accept moves from.
 	 */
@@ -230,182 +143,6 @@ import java.awt.Color;
 		
 		//TODO Remove after debugging
 		// System.out.println("Active player has ID: " + this.activePlayer.getID());
-	}
-	
-	/*
-	 * Helper Functions:
-	 */
-	/**
-	 * Checks if the given start and end positions for a move are valid for a Pawn.
-	 * @param route An ArrayList of Positions to be traversed.
-	 * @return A boolean indicating the validity of the move.
-	 */
-	private boolean isValidPawnMove(ArrayList<Position> route) {
-		int directionModifier;
-		Position currentPosition = route.get(0);
-		Position nextPosition = route.get(1);
-		
-		if(currentPosition.getPiece().getColor() == Color.BLACK) {
-			directionModifier = 1;
-		} else {
-			directionModifier = -1;
-		}
-		
-		return ((route.size() == 2)
-				&& !route.get(1).hasPiece()
-				&& ((nextPosition.getY() == (currentPosition.getY() + directionModifier)) 
-				&& ((nextPosition.getX() == (currentPosition.getX() + 1))
-				|| (nextPosition.getX() == (currentPosition.getX() - 1)))));
-	}
-	
-	/**
-	 * Checks if the given start and end positions for a move are valid for a King.
-	 * @param route An ArrayList of Positions to be traversed.
-	 * @return A boolean indicating the validity of the move.
-	 */
-	private boolean isValidKingMove(ArrayList<Position> route) {
-		Position currentPosition = route.get(0);
-		Position nextPosition = route.get(1);
-		
-		return ((route.size() == 2)
-				&& !route.get(1).hasPiece()
-				&& (((nextPosition.getX() == (currentPosition.getX() + 1)) 
-				|| (nextPosition.getX() == (currentPosition.getX() - 1)))
-				
-				&& ((nextPosition.getY() == (currentPosition.getY() + 1))
-				|| (nextPosition.getY() == (currentPosition.getY() - 1)))));
-	}
-	
-	/**
-	 * Checks if the Board and the given start and end Positions for a jump are valid for a Pawn.
-	 * @param board The Board on which the jump is being attempted.
-	 * @param startingPosition The starting Position of the Piece making the jump.
-	 * @param endingPosition The ending Position of the Piece making the jump.
-	 * @return Tells whether the proposed jump is valid for a Pawn.
-	 */
-	private boolean isValidPawnJump(Board board, ArrayList<Position> route) throws InvalidPositionException {
-		int directionModifier;
-		Position currentPosition, nextPosition, jumpedPosition;
-		boolean validity = false;
-		
-		if(route.get(0).getPiece().getColor() == Color.BLACK) {
-			directionModifier = 1;
-		} else {
-			directionModifier = -1;
-		}
-		
-		
-		for(int i = 0; i < (route.size() - 1); i++) {
-			currentPosition = route.get(i);
-			nextPosition = route.get(i + 1);
-
-			if((nextPosition.getY() == (currentPosition.getY() + (2 * directionModifier))) 
-				&& ((nextPosition.getX() == (currentPosition.getX() + 2)) 
-				|| (nextPosition.getX() == (currentPosition.getX() - 2)))) {
-				
-				jumpedPosition = getJumpedPosition(board, currentPosition, nextPosition);
-				validity = (jumpedPosition.hasPiece() && (jumpedPosition.getPiece().getColor() != activePlayer.getColor()));
-			}
-			
-			if(!validity) return validity;
-		}
-		
-		// TODO Finish Mandatory Jump Code 
-		/* This needs to be a seperate function.
-		currentPosition = route.get(route.size() - 1);
-		try { 
-			nextPosition = board.getPosition(currentPosition.getX() + 2, currentPosition.getY() + (2 * directionModifier));
-			
-			ArrayList<Position> manditoryJumpRoute = new ArrayList<Position>();
-			manditoryJumpRoute.add(currentPosition);
-			manditoryJumpRoute.add(nextPosition);
-			
-			validity = !isValidPawnJump(board, manditoryJumpRoute);
-		} catch (InvalidPositionException e) {}
-		
-		try {
-			nextPosition = board.getPosition(currentPosition.getX() - 2, currentPosition.getY() + (2 * directionModifier));
-			
-			ArrayList<Position> manditoryJumpRoute = new ArrayList<Position>();
-			manditoryJumpRoute.add(currentPosition);
-			manditoryJumpRoute.add(nextPosition);
-			
-			validity = !isValidPawnJump(board, manditoryJumpRoute);
-		} catch (InvalidPositionException e) {}
-		*/
-		
-		return validity;
-	}
-	
-	/**
-	 * Checks if the Board and the given start and end Positions for a jump are valid for a King.
-	 * @param board The Board on which the jump is being attempted.
-	 * @param startingPosition The starting Position of the Piece making the jump.
-	 * @param endingPosition The ending Position of the Piece making the jump.
-	 * @return Tells whether the proposed jump is valid for a King.
-	 */
-	private boolean isValidKingJump(Board board, ArrayList<Position> route) throws InvalidPositionException {
-		Position currentPosition, nextPosition, jumpedPosition;
-		boolean validity = false;
-
-		for(int i = 0; i < (route.size() - 1); i++) {
-			currentPosition = route.get(i);
-			nextPosition = route.get(i + 1);
-
-			if(((nextPosition.getY() == (currentPosition.getY() + 2))
-					|| (nextPosition.getY() == (currentPosition.getY() - 2)))
-				&& ((nextPosition.getX() == (currentPosition.getX() + 2)) 
-				|| (nextPosition.getX() == (currentPosition.getX() - 2)))) {
-				
-				jumpedPosition = getJumpedPosition(board, currentPosition, nextPosition);
-				validity = (jumpedPosition.hasPiece() && (jumpedPosition.getPiece().getColor() != currentPosition.getPiece().getColor()));
-			
-				if(!validity) return validity;
-			}
-		}
-		
-		return validity;
-	}
-	
-	/**
-	 * This method exists only to simplify code elsewhere.
-	 * @param board the Board on which the jump is being attempted
-	 * @param startingPosition The starting Position of the Piece making the jump.
-	 * @param endingPosition The ending Position of the Piece making the jump.
-	 * @return The Position jumped when a jump from/to the given Positions is made.
-	 */
-	private ArrayList<Position> getJumpedPositions(Board board, ArrayList<Position> route) throws InvalidPositionException {
-		Position currentPosition, nextPosition;
-		ArrayList<Position> jumpedPositions = new ArrayList<Position>();
-		
-		for(int i = 0; i < (route.size() -1); i++) {
-			currentPosition = route.get(i);
-			nextPosition = route.get(i + 1);
-			
-			jumpedPositions.add(i, board.getPosition(((nextPosition.getX() - currentPosition.getX()) / 2) + currentPosition.getX(), 
-								(((nextPosition.getY() - currentPosition.getY()) / 2) + currentPosition.getY())));
-		}
-		
-		return jumpedPositions;
-	}
-	
-	/**
-	 * 
-	 * @param board - The Board on which the jump is being attempted
-	 * @param startingPosition - The starting position of the piece making the jump
-	 * @param endingPosition - The ending position of the piece making the jump
-	 * @return Position - The new position of the jumping piece
-	 * @throws InvalidPositionExceptionf
-	 */
-	private Position getJumpedPosition(Board board, Position startingPosition, Position endingPosition) throws InvalidPositionException {
-		try{
-			return board.getPosition(((endingPosition.getX() - startingPosition.getX()) / 2) + startingPosition.getX(), 
-					(((endingPosition.getY() - startingPosition.getY()) / 2) + startingPosition.getY()));
-		}
-		catch(InvalidPositionException e){
-			throw new InvalidPositionException ("This is not a valid Position.", e);
-		}//TODO I'm really not sure if this does anything. I'm pretty sure re-throwing the Exception is pointless.
-		
 	}
 
 	//TODO Finish switching the Jump model to a multi-step turn, fix overloaded methods.
@@ -421,11 +158,25 @@ import java.awt.Color;
 	}
 	
 	public void setActivePosition(Position position) {
+		//TODO Rewrote this for debugging. Old (shorter) version commented out below.
+		if(!position.hasPiece()) {
+			System.out.println("sAP: No Piece at the requested location.");
+			clearActivePosition();
+		}
+		else if(position.getPiece().getColor() != activePlayer.getColor()) {
+			System.out.println("sAP: The Piece on the requested Position is of the wrong Color.");
+			clearActivePosition();
+		} else {
+			System.out.println("sAP: Setting activePosition to (" + position.getX() + ", " + position.getY() + ").");
+			this.activePosition = position;
+		}
+		/*
 		if(position.hasPiece() && (position.getPiece().getColor() == activePlayer.getColor())) {
 				this.activePosition = position;
 		} else {
 			clearActivePosition();
 		}
+		*/
 	}
 
 	public void promote(Position position) {
@@ -453,7 +204,36 @@ import java.awt.Color;
 	}
 	
 	public void clearActivePosition() {
+		System.out.println("cAP: The activePosition has been cleared.");
 		activePosition = null;
+	}
+	
+	public ArrayList<Move> getAllAvailableMoves(Color color) { 
+		ArrayList<Move> moves = new ArrayList<Move>();
+		Position position;
+		try { 
+			for(int i = 0; i < 8; i++) { 
+				for(int j = 0; j < 8; j++) {
+					position = board.getPosition(i, j);
+					if(position.hasPiece() && (position.getPiece().getColor() == color)) {
+						moves.addAll(getAvailableMoves(position));	
+					}
+				}
+			}
+		} catch (InvalidPositionException e) {
+			System.out.println("gAAM: Board is not of standard size.");
+		}
+		
+		return moves;
+	}
+	
+	public ArrayList<Move> getJumps(ArrayList<Move> moves) { 
+		ArrayList jumps = new ArrayList<Move>();
+		int numberOfMoves = moves.size();
+		for(int i = 0; i < numberOfMoves; i++) {
+			
+		}
+		return jumps;
 	}
 	
 	private ArrayList<Move> getAvailableMoves(Position startingPosition, int directionModifier, ArrayList<Move> availableMoves) {

@@ -14,8 +14,59 @@ import java.awt.*;
 public class Test {
 
 	public static void main(String[] args) {
+		try {
+			Game testGame = new Game();
+			Board testBoard = testGame.getBoard();
+			Position inputPosition;
+			ArrayList<Position> route;
+			
+			String input = "test";
+			Scanner scanner = new Scanner(System.in);
+			Pattern movePattern = Pattern.compile("\\(([0-7]), ([0-7])\\)");
+			Matcher moveMatcher;
+			testGame.stageBoard();
+			
+			testGame.setActivePosition(testBoard.getPosition(2, 2));
+			testGame.move(testBoard.getPosition(3, 3));
+			while (!input.equals("EXIT")) {
+				route = new ArrayList<Position>();
+				printBoard(testBoard);
+				
+				System.out.println("\nEnter a Move.");
+				
+				input = scanner.nextLine();
+				moveMatcher = movePattern.matcher(input);
+				
+				if(moveMatcher.find()) {
+					inputPosition = testBoard.getPosition(Integer.parseInt(moveMatcher.group(1)), Integer.parseInt(moveMatcher.group(2)));
+					testGame.move(inputPosition);
+					
+				}
+				
+				
+				/*
+				while(moveMatcher.find()) {
+						inputPosition = testBoard.getPosition(Integer.parseInt(moveMatcher.group(1)), Integer.parseInt(moveMatcher.group(2)));
+					
+						route.add(inputPosition);
+				}
+				
+				if(route.size() >= 2) {
+					printAvailableMoves(testGame.getAvailableMoves(route.get(0)));
+					testGame.move(testGame.getActivePlayer(), route);
+				}
+				*/
+			}
+			
+			scanner.close();
+			
+		} catch (InvalidMoveException e) {
+			System.out.println("Error.");
+		} catch (InvalidPositionException e) {
+			
+		}
 		
-		
+		/*
 		Game game = new Game();
 		Piece piece = new Piece(Color.RED);
 		Board gameBoard = game.getBoard(), board = new Board();
@@ -32,11 +83,7 @@ public class Test {
 			printBoard(gameBoard);
 	
 			if(board.getPosition(1, 1).hasPiece()) System.out.println("Color: " + board.getPosition(1,1).getPiece().getColor());
-			
-			/*
-			 * Test moving various pieces around the board.
-			 */
-			
+
 			// Move BLACK Pawn forwards.
 			game.move(game.getPlayer1(), createRoute(gameBoard.getPosition(2, 0), gameBoard.getPosition(1, 1)));
 			
@@ -79,61 +126,8 @@ public class Test {
 		} catch (Exception e) {
 			System.out.println("Error: " + e.getMessage());
 		}
-		
-		try {
-			Game testGame = new Game();
-			Board testBoard = testGame.getBoard();
-			Position inputPosition;
-			ArrayList<Position> route;
-			
-			String input = "test";
-			Scanner scanner = new Scanner(System.in);
-			Pattern movePattern = Pattern.compile("\\(([0-7]), ([0-7])\\)");
-			Matcher moveMatcher;
-			testGame.stageBoard();
-			
-			testGame.setActivePosition(testBoard.getPosition(2, 2));
-			testGame.move(testBoard.getPosition(3, 3));
-			while (!input.equals("EXIT")) {
-				route = new ArrayList<Position>();
-				printBoard(testBoard);
-				
-				System.out.println("\nEnter a Move.");
-				
-				input = scanner.nextLine();
-				moveMatcher = movePattern.matcher(input);
-				
-				if(moveMatcher.find()) {
-					inputPosition = testBoard.getPosition(Integer.parseInt(moveMatcher.group(1)), Integer.parseInt(moveMatcher.group(2)));
-					if(testGame.hasActivePosition()) {
-						printAvailableMoves(testGame.getAvailableMoves(inputPosition));
-					}
-					testGame.move(inputPosition);
-					
-				}
-				
-				
-				/*
-				while(moveMatcher.find()) {
-						inputPosition = testBoard.getPosition(Integer.parseInt(moveMatcher.group(1)), Integer.parseInt(moveMatcher.group(2)));
-					
-						route.add(inputPosition);
-				}
-				
-				if(route.size() >= 2) {
-					printAvailableMoves(testGame.getAvailableMoves(route.get(0)));
-					testGame.move(testGame.getActivePlayer(), route);
-				}
-				*/
-			}
-			
-			scanner.close();
-			
-		} catch (InvalidMoveException e) {
-			System.out.println("Error.");
-		} catch (InvalidPositionException e) {
-			
-		}
+		*/
+
 	}
 	
 	private static void printAvailableMoves(ArrayList<Move> availableMoves) {
