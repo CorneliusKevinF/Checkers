@@ -9,7 +9,7 @@ package model;
  *
  */
 public class Position {
-	private int x, y;
+	private final int x, y;
 	private Piece piece;
 	
 	public Position(int x, int y) {

@@ -1,17 +1,20 @@
 package model;
+
+import java.awt.Color;
+
 /**
  * The Board class is an 8x8 array of Positions. It does nothing more than hold pieces.
  * @author Kevin Cornelius
  */
 public class Board {
-	Position[][] squares;
+	Position[][] positions;
 
 	public Board() {
-		squares = new Position[8][8];
+		positions = new Position[8][8];
 		
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
-				squares[i][j] = new Position(i,j);
+				positions[i][j] = new Position(i,j);
 			}
 		}
 	}
@@ -20,13 +23,40 @@ public class Board {
 	 * Moves a Piece on the Board from one Position to another.
 	 * @param startingPosition The starting Position of the Piece to be moved.
 	 * @param endingPosition The Position for the Piece to be moved to.
-	 * @throws InvalidMoveException
 	 */
-	public void movePiece(Position startingPosition, Position endingPosition) throws InvalidMoveException {
+	public void movePiece(Position startingPosition, Position endingPosition) {
 			endingPosition.addPiece(startingPosition.getPiece());
 			startingPosition.removePiece();
 	}
+
+	public void addPiece(int x, int y, Piece piece) throws InvalidPositionException {
+		try {
+			positions[x][y].addPiece(piece);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new InvalidPositionException("(" + x + ", " + y + ") is not a valid Position.", e);
+		}
+	}
 	
+	public void addPiece(int x, int y, Color color) throws InvalidPositionException {
+		addPiece(x, y, new Piece(color));
+	}
+	
+	/**
+	 * 
+	 * @param x
+	 * @param y
+	 * @throws InvalidPositionException
+	 */
+	public void removePiece(int x, int y) throws InvalidPositionException {
+		try {
+			positions[x][y].removePiece();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			throw new InvalidPositionException("(" + x + ", " + y + ") is not a valid Position.", e);
+		}
+	}
+	public void removePiece(Position position) {
+		position.removePiece();
+	}
 	/**
 	 * Retrieves a position from the Board.
 	 * @param x The x-line on which the desired Position rests.
@@ -36,7 +66,7 @@ public class Board {
 	 */
 	public Position getPosition(int x, int y) throws InvalidPositionException {
 		try {
-			return squares[x][y];
+			return positions[x][y];
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new InvalidPositionException("(" + x + ", " + y + ") is not a valid Position.", e);
 		}
@@ -48,7 +78,7 @@ public class Board {
 	public void clear() {
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
-				squares[i][j].removePiece();
+				positions[i][j].removePiece();
 			}
 		}
 	}

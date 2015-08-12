@@ -38,11 +38,7 @@ public class GraphicsTest {
     	}
 		Game game = new Game();
     	game.addObserver(gameView);
-    	try {
     		game.stageBoard();
-    	} catch (InvalidPositionException e) {
-    		
-    	}
     	
     	gameView.getFrame().revalidate();
     	//gameView.getFrame().repaint();

@@ -92,6 +92,8 @@ public class Test {
 			Matcher moveMatcher;
 			testGame.stageBoard();
 			
+			testGame.setActivePosition(testBoard.getPosition(2, 2));
+			testGame.move(testBoard.getPosition(3, 3));
 			while (!input.equals("EXIT")) {
 				route = new ArrayList<Position>();
 				printBoard(testBoard);
@@ -107,7 +109,10 @@ public class Test {
 						route.add(inputPosition);
 				}
 				
-				if(route.size() >= 2) testGame.move(testGame.getActivePlayer(), route);
+				if(route.size() >= 2) {
+					printAvailableMoves(testGame.getAvailableMoves(route.get(0)));
+					testGame.move(testGame.getActivePlayer(), route);
+				}
 			}
 			
 			scanner.close();
@@ -117,6 +122,26 @@ public class Test {
 		} catch (InvalidPositionException e) {
 			
 		}
+	}
+	
+	private static void printAvailableMoves(ArrayList<Move> availableMoves) {
+		int numberOfMoves = availableMoves.size();
+		Move move;
+		Position endingPosition;
+		
+		if(availableMoves.size() > 0) {
+			System.out.println("Valid Moves Starting at (" + availableMoves.get(0).getStartingPosition().getX() + ", " + availableMoves.get(0).getStartingPosition().getY() + "):" );
+		} else {
+			return;
+		}
+		
+		for(int i = 0; i < numberOfMoves; i++) {
+			move = availableMoves.get(i);
+			endingPosition = move.getEndingPosition();
+			System.out.print("(" + endingPosition.getX() + ", " + endingPosition.getY() + ") ");
+		}
+		
+		System.out.println();
 	}
 	
 	/**

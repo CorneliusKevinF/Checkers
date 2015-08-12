@@ -10,114 +10,43 @@ import java.awt.Color;
 public class Piece {
 	private Color color;
 	private boolean isKing;
-
-	Piece(Color color) {
+	/**
+	 * Makes a new 'pawn' with the given color
+	 * @param color The color describing which team the Piece will be on.
+	 */
+	public Piece(Color color) {
 		this.color = color;
 		this.isKing = false;
 	}
 
 //Getters and Setters Below ***********
+	/**
+	 * Promotes the piece from a 'pawn' to a 'king.'
+	 */
 	public void promote() {
 		this.isKing = true;
 	}
 	
+	/**
+	 * Returns whether or not the Piece is a 'king' in the form of <code>true</code> or <code>false</code>.
+	 * @return Whether or not the Piece is a 'king.'
+	 */
 	public boolean isKing() {
 		return this.isKing;
 	}
 	
+	/**
+	 * 
+	 * @return The Piece's color.
+	 */
 	public Color getColor() {
 		return color;
 	}
-
+	/**
+	 * Set's the Piece's color.
+	 * @param color The new color for the Piece.
+	 */
 	public void setColor(Color color) {
 		this.color = color;
 	}
-
-	//Movement Below
-	/*
-		private Color color;
-		private int[] location; //row, column from black team perspective	
-		private enum Direction {
-			FORWARDRIGHT, FORWARDLEFT, BACKWARDRIGHT, BACKWARDLEFT
-		}
-		 
-		public int[] jump(Direction direction){
-			move(direction);
-			move(direction);
-			
-			return location;
-		}
-		
-		public int[] move(Direction direction){
-			if(color == Color.BLACK){
-				switch(direction){
-					case FORWARDLEFT:
-						location[1] = location[1]+1;//Forward
-						location[2] = location[2]-1;//Left
-						break;
-					case FORWARDRIGHT:
-						location[1] = location[1]+1;//Forward
-						location[2] = location[2]+1;//Right
-						break;
-					case BACKWARDLEFT:
-						if(isKing){
-							location[1] = location[1]-1;//Backwards
-							location[2] = location[2]-1;//Left
-							break;
-						}
-						else{
-							System.out.println("ERROR: Piece is not a king.");
-						}
-						break;
-					case BACKWARDRIGHT:
-						if(isKing){
-							location[1] = location[1]-1;//Backwards
-							location[2] = location[2]+1;//Right
-							break;
-						}
-						else{
-							System.out.println("ERROR: Piece is not a king.");
-						}
-						break;
-				}
-			}
-			else if(color == Color.RED){
-				switch(direction){
-					case FORWARDLEFT:
-						location[1] = location[1]-1;//Forward
-						location[2] = location[2]+1;//Left
-						break;
-					case FORWARDRIGHT:
-						location[1] = location[1]-1;//Forward
-						location[2] = location[2]-1;//Right
-						break;
-					case BACKWARDLEFT:
-						if(isKing){
-							location[1] = location[1]+1;//Backwards
-							location[2] = location[2]+1;//Left
-							break;
-						}
-						else{
-							System.out.println("ERROR: Piece is not a king.");
-						}
-						break;
-					case BACKWARDRIGHT:
-						if(isKing){
-							location[1] = location[1]+1;//Backwards
-							location[2] = location[2]-1;//Right
-							break;
-						}
-						else{
-							System.out.println("ERROR: Piece is not a king.");
-						}
-						break;
-				}
-			}
-			else{
-				System.out.println("ERROR: Piece has no color.");
-				return new int[0];
-			}
-			return location;
-		}
-	*/
 }
