@@ -75,7 +75,12 @@ import java.awt.Color;
 		// worry about whether there is an acitvePosition or not. This class would then handle all events that 
 		// select a single position. If it is a valid move, the move will be made. Otherwise an attempt to select
 		// a position will be made.
-		if((activePosition != null) && !activePosition.hasPiece()) throw new InvalidMoveException("Can't move without a Piece selected.");
+		if(activePosition == null) {
+			setActivePosition(position);
+			return;
+		}
+		
+		if(!activePosition.hasPiece()) throw new InvalidMoveException("Can't move without a Piece selected.");
 		
 		ArrayList<Move> availableMoves = getAvailableMoves(activePosition);
 		int numberOfMoves = availableMoves.size();
@@ -98,6 +103,7 @@ import java.awt.Color;
 				notifyObservers(endingPosition);
 				
 				clearActivePosition();
+				changeActivePlayer();
 				
 				if(availableMoves.get(i).isJump()) {
 					Position jumpedPosition = availableMoves.get(i).getJumpedPosition();
@@ -107,6 +113,9 @@ import java.awt.Color;
 					setChanged();
 					notifyObservers(jumpedPosition);
 					
+					//TODO remove doubling of code. changing the active player excessively could affect something like
+					// a turn counter later on in development.
+					changeActivePlayer();
 					setActivePosition(endingPosition);
 				}
 				
@@ -406,6 +415,7 @@ import java.awt.Color;
 		setActivePosition(position);
 		} catch (InvalidPositionException e) {
 			System.out.println("Position is invalid. Piece cannot be selected.");
+			clearActivePosition();
 			return;
 		}
 	}
@@ -413,6 +423,8 @@ import java.awt.Color;
 	public void setActivePosition(Position position) {
 		if(position.hasPiece() && (position.getPiece().getColor() == activePlayer.getColor())) {
 				this.activePosition = position;
+		} else {
+			clearActivePosition();
 		}
 	}
 
@@ -430,6 +442,14 @@ import java.awt.Color;
 			setChanged();
 			notifyObservers(position);
 		}
+	}
+	
+	public Position getActivePosition() {
+		return activePosition;
+	}
+	
+	public boolean hasActivePosition() {
+		return (activePosition != null);
 	}
 	
 	public void clearActivePosition() {

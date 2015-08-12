@@ -103,6 +103,17 @@ public class Test {
 				input = scanner.nextLine();
 				moveMatcher = movePattern.matcher(input);
 				
+				if(moveMatcher.find()) {
+					inputPosition = testBoard.getPosition(Integer.parseInt(moveMatcher.group(1)), Integer.parseInt(moveMatcher.group(2)));
+					if(testGame.hasActivePosition()) {
+						printAvailableMoves(testGame.getAvailableMoves(inputPosition));
+					}
+					testGame.move(inputPosition);
+					
+				}
+				
+				
+				/*
 				while(moveMatcher.find()) {
 						inputPosition = testBoard.getPosition(Integer.parseInt(moveMatcher.group(1)), Integer.parseInt(moveMatcher.group(2)));
 					
@@ -113,6 +124,7 @@ public class Test {
 					printAvailableMoves(testGame.getAvailableMoves(route.get(0)));
 					testGame.move(testGame.getActivePlayer(), route);
 				}
+				*/
 			}
 			
 			scanner.close();
