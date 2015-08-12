@@ -3,6 +3,7 @@ package view;
 import java.awt.*;
 import javax.swing.*;
 import java.util.*;
+import java.awt.event.*;
 
 public class GameView implements Observer {
 	BoardPanel boardPanel;
@@ -13,13 +14,12 @@ public class GameView implements Observer {
 		
 		frame = new JFrame("CD Checkers");
 		frame.setLayout(null);
-
+		
         Insets insets = frame.getInsets();
         
 		boardPanel = new BoardPanel(insets);
-		
-		frame.add(boardPanel);
-		frame.pack();
+		frame.setContentPane(boardPanel);
+		//frame.pack();
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -42,11 +42,16 @@ public class GameView implements Observer {
 	public void update(Observable observable, Object observed) {
 		model.Position position = (model.Position) observed;
 		
-		System.out.println("Position: (" + position.getX() + ", " + position.getY() + ") updating...");
+		//System.out.println("Position: (" + position.getX() + ", " + position.getY() + ") updating...");
 		
 		
 		// Not sure if the view should be calling these methods. I think it breaks some MVC rules.
 		boardPanel.update(position);
+	}
+	
+	public void addController(MouseListener controller) {
+		boardPanel.printPositionPanels();
+		boardPanel.addMouseListener(controller);
 	}
 	
 	public JFrame getFrame() {

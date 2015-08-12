@@ -1,6 +1,9 @@
 package model;
 import java.util.*;
 import java.util.regex.*;
+
+import controller.GameController;
+
 import java.awt.*;
 
 //TODO Find out why I keep getting error when trying to run. Unsupported major.minor
@@ -17,6 +20,7 @@ public class Test {
 		try {
 			Game testGame = new Game();
 			Board testBoard = testGame.getBoard();
+			
 			Position inputPosition;
 			ArrayList<Position> route;
 			

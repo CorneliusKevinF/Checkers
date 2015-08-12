@@ -1,6 +1,8 @@
 package temp;
 
 import java.awt.*;
+
+import controller.GameController;
 import model.*;
 import view.*;
 
@@ -32,12 +34,19 @@ public class GraphicsTest {
     	GameView gameView = new GameView();
     	
     	try {
-    	Thread.sleep(5000);
+    	Thread.sleep(3000);
     	} catch (InterruptedException e) {
     		System.out.println("Sleep interrupted.");
     	}
 		Game game = new Game();
+
+		GameController gameController = new GameController();
+		gameController.setGame(game);
+		gameController.setGameView(gameView);
+		
     	game.addObserver(gameView);
+    	
+    	gameView.addController(gameController);
     		game.stageBoard();
     	
     	gameView.getFrame().revalidate();

@@ -2,6 +2,7 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import model.Position;
 
 @SuppressWarnings("serial")
@@ -30,6 +31,8 @@ public class BoardPanel extends JPanel {
 		int x, y; 
 		Color color;
 		
+		PositionPanel positionPanel;
+		
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
 				x = (int) ((i * positionSideLength) + (positionSideLength / 2));
@@ -40,10 +43,12 @@ public class BoardPanel extends JPanel {
 				} else {
 					color = Color.BLACK;
 				}
-				
-				positionPanels[i][j] = new PositionPanel(x, y, positionSideLength, color);
+				positionPanel = new PositionPanel(x, y, positionSideLength, color);
+				positionPanels[i][j] = positionPanel;
 			}
 		}
+		
+		System.out.println("BP: Construction Complete! [sideLength: " + sideLength + "]");
 	}
 
 	public void update(Position position) {
@@ -67,6 +72,35 @@ public class BoardPanel extends JPanel {
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
 				positionPanels[i][j].paintComponent(graphics);
+			}
+		}
+	}
+	
+	public void printPositionPanels() {
+		System.out.print("Print Locations for Position Panels...");
+		PositionPanel positionPanel;
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 8; j++) {
+				positionPanel = positionPanels[i][j];
+				if(positionPanel != null) {
+					System.out.println("BP: Position: (" + positionPanel.getXPosition() + ", " + positionPanel.getYPosition() + ") at (" + i + ", " + j + ")");
+				} else {
+					System.out.println("BP: No valid PositionPanel at (" + i + ", " + j + ")");
+				}
+			}
+		}
+		
+		System.out.println("Printing Complete.");
+	}
+	
+	@Override 
+	public void addMouseListener(MouseListener controller) {
+		super.addMouseListener(controller);
+		PositionPanel positionPanel;
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 8; j++) {
+				positionPanel = positionPanels[i][j];
+				positionPanel.addMouseListener(controller);
 			}
 		}
 	}
