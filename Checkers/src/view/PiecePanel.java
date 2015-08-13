@@ -43,6 +43,11 @@ public class PiecePanel extends JPanel {
 		isKing = true;
 	}
 	
+	public void setPosition(int xPosition, int yPosition) {
+		this.xPosition = xPosition;
+		this.yPosition = yPosition;
+	}
+
 	public int getXPosition() {
 		return xPosition;
 	}

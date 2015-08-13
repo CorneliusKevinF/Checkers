@@ -88,8 +88,6 @@ import java.awt.Color;
 			throw new InvalidMoveException("There are no moves available for the Piece selected.");
 		}
 		
-		
-		
 		Position endingPosition;
 		
 		// Check if the Position requested to move to, is one of the available Moves.
@@ -121,7 +119,6 @@ import java.awt.Color;
 				}
 				
 				promote(endingPosition);
-				
 				return;
 			}
 		}
@@ -151,7 +148,7 @@ import java.awt.Color;
 	public void setActivePosition(Position position) {
 		//TODO Rewrote this for debugging. Old (shorter) version commented out below.
 		if(!position.hasPiece()) {
-			System.out.println("sAP: No Piece at the requested location.");
+			System.out.println("sAP: No Piece at (" + position.getX() + ", " + position.getY() + ")");
 		}
 		else if(position.getPiece().getColor() != activePlayer.getColor()) {
 			System.out.println("sAP: The Piece on the requested Position is of the wrong Color.");

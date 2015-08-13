@@ -42,7 +42,7 @@ public class BoardPanel extends JPanel {
 					}
 					break;
 				case "remove":
-					positionPanel.removePiece();
+					positionPanel.deletePiece();
 					break;
 				case "promote":
 					positionPanel.promote();
@@ -56,14 +56,8 @@ public class BoardPanel extends JPanel {
 			
 			PositionPanel endingPositionPanel = positionPanels[endingPosition.getX()][7 - endingPosition.getY()];
 			
+			endingPositionPanel.addPiece(positionPanel.piecePanel);
 			positionPanel.removePiece();
-			endingPositionPanel.addPiece(endingPosition.getPiece().getColor());
-			
-			MouseListener[] listeners = getMouseListeners();
-			for(int i = 0; i < listeners.length; i++) {
-				endingPositionPanel.piecePanel.addMouseListener(listeners[i]);
-			}
-			
 		}
 	}
 	

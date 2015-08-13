@@ -61,6 +61,12 @@ public class PositionPanel extends JPanel {
 		}
 	}
 	
+	public void addPiece(PiecePanel piecePanel) {
+		this.piecePanel = piecePanel;
+		piecePanel.setLocation(getX(), getY());
+		piecePanel.setPosition(xPosition, yPosition);
+	}
+	
 	public void addPiece(Color color) {
 		//System.out.println("Adding a piece at position (" + x + ", " + y + ").");
 		JLayeredPane contentPane = (JLayeredPane) getParent();
@@ -68,11 +74,15 @@ public class PositionPanel extends JPanel {
 		contentPane.add(piecePanel, new Integer(3));
 	}
 
-	public void removePiece() {
+	public void deletePiece() {
 		JLayeredPane parent = (JLayeredPane) getParent();
 		parent.remove(piecePanel);	
 		piecePanel = null;
 		repaint();
+	}
+	
+	public void removePiece() {
+		piecePanel = null;
 	}
 	
 	public void promote() {
