@@ -4,60 +4,66 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import model.Position;
+import model.Update;
 
 @SuppressWarnings("serial")
 public class BoardPanel extends JPanel {
 	private int sideLength;
-	private PositionPanel[][] positionPanels;
+	protected PositionPanel[][] positionPanels;
 	
-	public BoardPanel(Insets insets) {
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		int screenWidth = (int) screenSize.getWidth();
-		int screenHeight = (int) screenSize.getHeight();
-		
-		if (screenWidth < screenHeight) {
-			sideLength = (int) (.9 * (screenWidth - insets.left - insets.right));
-		} else {
-			sideLength = (int) (.9 * (screenHeight - insets.top - insets.bottom));
-		}
-		
-		setMinimumSize(new Dimension(sideLength, sideLength));
-		setMaximumSize(new Dimension (sideLength, sideLength));
+	public BoardPanel(int sideLength) {
+		this.sideLength = sideLength;
+		initGUI();
+		// System.out.println("BP: Construction Complete! [sideLength: " + sideLength + "]");
+	}
+	
+	private void initGUI() {
 		setSize(new Dimension(sideLength, sideLength));
-		
-		
-		positionPanels = new PositionPanel[8][8];
-		int positionSideLength = (int) (sideLength / 9);
-		int x, y; 
-		Color color;
-		
-		PositionPanel positionPanel;
-		
-		for(int i = 0; i < 8; i++) {
-			for(int j = 0; j < 8; j++) {
-				x = (int) ((i * positionSideLength) + (positionSideLength / 2));
-				y = (int) ((j * positionSideLength) + (positionSideLength / 2));
-				
-				if(((i + j) % 2) == 0) {
-					color = Color.RED;
-				} else {
-					color = Color.BLACK;
-				}
-				positionPanel = new PositionPanel(x, y, positionSideLength, color);
-				positionPanels[i][j] = positionPanel;
-			}
-		}
-		
-		System.out.println("BP: Construction Complete! [sideLength: " + sideLength + "]");
+		System.out.println("Board is " + sideLength + " x " + sideLength + ".");
 	}
 
-	public void update(Position position) {
+	public void update(Object observed) {
+		Update update = (Update) observed;
+		Position position, endingPosition;
+		
+		position = (Position) update.get(0);
+	
 		PositionPanel positionPanel = positionPanels[position.getX()][7 - position.getY()];
 		
-		if(position.hasPiece()) {
-			positionPanel.addPiece(position.getPiece().getColor());
+		if(update.get(1) instanceof String) {
+			String action = (String) update.get(1);
+			
+			switch (action) {
+				case "add":
+					MouseListener[] listeners = getMouseListeners();
+					positionPanel.addPiece(position.getPiece().getColor());
+					for(int i = 0; i < listeners.length; i++) {
+						positionPanel.piecePanel.addMouseListener(listeners[i]);
+					}
+					break;
+				case "remove":
+					positionPanel.removePiece();
+					break;
+				case "promote":
+					positionPanel.promote();
+					break;
+				default:
+					
+					break;
+			}
 		} else {
+			endingPosition = (Position) update.get(1);
+			
+			PositionPanel endingPositionPanel = positionPanels[endingPosition.getX()][7 - endingPosition.getY()];
+			
 			positionPanel.removePiece();
+			endingPositionPanel.addPiece(endingPosition.getPiece().getColor());
+			
+			MouseListener[] listeners = getMouseListeners();
+			for(int i = 0; i < listeners.length; i++) {
+				endingPositionPanel.piecePanel.addMouseListener(listeners[i]);
+			}
+			
 		}
 	}
 	
@@ -76,8 +82,24 @@ public class BoardPanel extends JPanel {
 		}
 	}
 	
+	protected void setPositionPanels() {
+		positionPanels = new PositionPanel[8][8];
+		int positionSideLength = (int) (sideLength / 9);
+		
+		PositionPanel positionPanel;
+		JLayeredPane contentPane = (JLayeredPane) getParent();
+		
+		for(int i = 0; i < 8; i++) {
+			for(int j = 0; j < 8; j++) {
+				positionPanel = new PositionPanel(i, j, positionSideLength);
+				//positionPanel = new PositionPanel(x, y, positionSideLength, color);
+				positionPanels[i][j] = positionPanel;
+				contentPane.add(positionPanel, new Integer(2));
+			}
+		}
+	}
 	public void printPositionPanels() {
-		System.out.print("Print Locations for Position Panels...");
+		System.out.println("Print Locations for Position Panels...");
 		PositionPanel positionPanel;
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {

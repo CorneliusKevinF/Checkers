@@ -3,6 +3,7 @@ package view;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import javax.swing.*;
 import java.awt.event.*;
 
 import javax.swing.JPanel;
@@ -12,17 +13,41 @@ public class PositionPanel extends JPanel {
 	int xPosition, yPosition, sideLength;
 	PiecePanel piecePanel;
 	Color color;
+
 	
-	PositionPanel(int x, int y, int sideLength, Color color) {
-		this.xPosition = x; 
-		this.yPosition = y;
+	
+	public PositionPanel(int i, int j, int sideLength) {
+		xPosition = i;
+		yPosition = j;
+		this.sideLength = sideLength;
+		
+		int x, y;
+		
+		x = (int) ((i * sideLength) + (sideLength / 2));
+		y = (int) ((j * sideLength) + (sideLength / 2));
+		
+		if(((xPosition + yPosition) % 2 ) == 0) {
+			color = Color.RED;
+		} else {
+			color = Color.BLACK;
+		}
+		
+		piecePanel = null;
+		setLocation(x, y);
+		setSize(sideLength, sideLength);
+	}
+	/*
+	PositionPanel(int xOrigin, int yOrigin, int sideLength, Color color) {
+		this.xPosition = xOrigin; 
+		this.yPosition = yOrigin;
 		this.sideLength = sideLength;
 		this.color = color;
 		piecePanel = null;
-		
-		System.out.println("PP: Construction Complete! [x: " + x + ", y: " + y + ", sideLength: " + sideLength + ", color: " + color.toString() + "]");
+		setLocation(xOrigin, yOrigin);
+		setSize(sideLength, sideLength);
+		//System.out.println("PP: Construction Complete! [x: " + x + ", y: " + y + ", sideLength: " + sideLength + ", color: " + color.toString() + "]");
 	}
-	
+	*/
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -30,7 +55,7 @@ public class PositionPanel extends JPanel {
 		
 		//System.out.println("painting position at: (" + x + ", " + y + "). Sidelength: " + sideLength);
 		graphics.setColor(color);
-		graphics.fillRect(xPosition, yPosition, sideLength, sideLength);
+		graphics.fillRect(0, 0, sideLength, sideLength);
 		if(piecePanel != null) {
 			 piecePanel.paintComponent(graphics);
 		}
@@ -38,12 +63,20 @@ public class PositionPanel extends JPanel {
 	
 	public void addPiece(Color color) {
 		//System.out.println("Adding a piece at position (" + x + ", " + y + ").");
-		
-		piecePanel = new PiecePanel((int) (xPosition + (sideLength * .1)), (int) (yPosition + (sideLength * .1)), (int) (sideLength * .8), color);
+		JLayeredPane contentPane = (JLayeredPane) getParent();
+		piecePanel = new PiecePanel(xPosition, yPosition, getX(), getY(), sideLength, color);
+		contentPane.add(piecePanel, new Integer(3));
 	}
 
 	public void removePiece() {
+		JLayeredPane parent = (JLayeredPane) getParent();
+		parent.remove(piecePanel);	
 		piecePanel = null;
+		repaint();
+	}
+	
+	public void promote() {
+		piecePanel.setKing();
 	}
 	
 	public int getXPosition() {
@@ -53,12 +86,5 @@ public class PositionPanel extends JPanel {
 	public int getYPosition() {
 		return yPosition;
 	}
-	
-	
-	@Override 
-	public void addMouseListener(MouseListener controller) {
-		super.addMouseListener(controller);
-		
-		System.out.println("Mouse listener added successfully at (" + xPosition + ", " + yPosition + ")");
-	}
+
 }

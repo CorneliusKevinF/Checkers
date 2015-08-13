@@ -1,56 +1,56 @@
 package view;
 
-import java.awt.*;
 import javax.swing.*;
 import java.util.*;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.*;
+import java.awt.*;
 
 public class GameView implements Observer {
 	BoardPanel boardPanel;
 	JFrame frame;
-	
-	public GameView() {
-		//TODO Position and size of Frame still aren't perfect. Learn how to better manipulate JFrames.
-		
-		frame = new JFrame("CD Checkers");
-		frame.setLayout(null);
-		
-        Insets insets = frame.getInsets();
-        
-		boardPanel = new BoardPanel(insets);
-		frame.setContentPane(boardPanel);
-		//frame.pack();
-		frame.setResizable(false);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        Dimension contentSize = boardPanel.getSize();
-        
-        frame.setVisible(true);
-        
-        frame.setSize(new Dimension((int) contentSize.getWidth() + insets.left + insets.right, (int) contentSize.getHeight() + insets.top + insets.bottom));
+	public GameView() {
+		frame = new JFrame("CD Checkers");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		int screenWidth = (int) screenSize.getWidth();
 		int screenHeight = (int) screenSize.getHeight();
 		
-        frame.setLocation((int) ((screenWidth - frame.getWidth()) / 2), (int) ((screenHeight - frame.getHeight()) / 2));
-        
-        System.out.println("GameView instantiated.");
+		if(screenWidth > screenHeight) {
+			frame.setMinimumSize(new Dimension(screenHeight - 100, screenHeight - 100));
+		} else {
+			frame.setMinimumSize(new Dimension(screenWidth - 100, screenWidth - 100));
+		}
+		
+		Insets insets = frame.getInsets();
+		JLayeredPane contentPane = new JLayeredPane();
+		contentPane.setSize(new Dimension(frame.getWidth() - insets.left - insets.right, frame.getHeight() - insets.top - insets.bottom));
+		frame.setContentPane(contentPane);
+		
+		boardPanel = new BoardPanel(contentPane.getHeight());
+		
+		frame.getContentPane().add(boardPanel, new Integer(1));
+		boardPanel.setPositionPanels();
+		
+		frame.pack();
+		frame.setVisible(true);
 	}
 
+	// This method seems to be slightly dependent on the model.
 	@Override
 	public void update(Observable observable, Object observed) {
-		model.Position position = (model.Position) observed;
-		
+
 		//System.out.println("Position: (" + position.getX() + ", " + position.getY() + ") updating...");
 		
 		
 		// Not sure if the view should be calling these methods. I think it breaks some MVC rules.
-		boardPanel.update(position);
+		boardPanel.update(observed);
 	}
 	
 	public void addController(MouseListener controller) {
-		boardPanel.printPositionPanels();
 		boardPanel.addMouseListener(controller);
 	}
 	

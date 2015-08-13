@@ -1,7 +1,5 @@
 package temp;
 
-import java.awt.*;
-
 import controller.GameController;
 import model.*;
 import view.*;
@@ -47,9 +45,9 @@ public class GraphicsTest {
     	game.addObserver(gameView);
     	
     	gameView.addController(gameController);
-    		game.stageBoard();
+    	game.stageBoard();
     	
-    	gameView.getFrame().revalidate();
+    	gameView.getFrame().getContentPane().revalidate();
     	//gameView.getFrame().repaint();
     }
     	

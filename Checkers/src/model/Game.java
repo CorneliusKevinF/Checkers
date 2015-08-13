@@ -24,7 +24,6 @@ import java.awt.Color;
 	// TODO Right now there is no requirement that the activePosition matches the Color of the activePlayer.
 	// This might lead us to display possible moves for the opposing team. Easily fixed if needed.
 	private Position activePosition;
-	private ArrayList<Move> validMoves;
 	private boolean midJump;
 	
 	public Game() {
@@ -48,9 +47,9 @@ import java.awt.Color;
 			for(int j = 0; j < 3; j++) { 
 				position = this.board.getPosition(i + (j % 2), j);
 				position.addPiece(new Piece(Color.BLACK));
-				//System.out.println("Attempting to notify observers...");
-				setChanged();
-				notifyObservers(position);
+				
+				setChanged();				
+				notifyObservers(new Update(position, "add"));
 			}
 		}
 		
@@ -59,9 +58,9 @@ import java.awt.Color;
 			for(int j = 5; j < 8; j++) { 
 				position = this.board.getPosition(i + (j % 2), j);
 				position.addPiece(new Piece(Color.RED));
-				//System.out.println("Attempting to notify observers...");
+				
 				setChanged();
-				notifyObservers(position);
+				notifyObservers(new Update(position, "add"));
 			}
 		}
 		} catch (InvalidPositionException e) {
@@ -70,28 +69,29 @@ import java.awt.Color;
 	}
 	
 	public void move(Position position) throws InvalidMoveException {
-		// TODO Considering changing this conditional to redirect the request to setActivePosition().
-		// This would insure clicking on a position is always productive and the controller doesn't need to 
-		// worry about whether there is an acitvePosition or not. This class would then handle all events that 
-		// select a single position. If it is a valid move, the move will be made. Otherwise an attempt to select
-		// a position will be made.
-		if(activePosition == null) {
-			setActivePosition(position);
-			return;
-		}
+		// If there is no Piece selected before the move is requested, throw an Exception.
+		if((activePosition == null) || !activePosition.hasPiece()) throw new InvalidMoveException("Can't move without a Piece selected.");
 		
-		// TODO Right now the activePostion is set under strict conditions that guarantee the presence of a Piece of the
-		// activePlayer's Color on the request Position so this code does nothing except lookout for bugs.
-		if(!activePosition.hasPiece()) throw new InvalidMoveException("Can't move without a Piece selected.");
-		
+		// Get the available moves
 		ArrayList<Move> availableMoves = getAvailableMoves(activePosition);
 		int numberOfMoves = availableMoves.size();
 		System.out.println("m: There are " + numberOfMoves + " available");
 		
-		if(numberOfMoves == 0) throw new InvalidMoveException("There are no moves available for the Piece selected.");
+		// If a jump was just completed remove all non-'jump' Moves from the list of available Moves.
+		if(midJump) {
+			availableMoves = removeNonJumps(availableMoves);
+		}
+		// If there are no Moves available, throw an Exception.
+		if(numberOfMoves == 0) {
+			midJump = false;
+			throw new InvalidMoveException("There are no moves available for the Piece selected.");
+		}
+		
+		
 		
 		Position endingPosition;
 		
+		// Check if the Position requested to move to, is one of the available Moves.
 		for(int i = 0; i < numberOfMoves; i++) {
 			endingPosition = availableMoves.get(i).getEndingPosition();
 			
@@ -101,25 +101,22 @@ import java.awt.Color;
 				
 				// Model notifying View
 				setChanged();
-				notifyObservers(activePosition);
-				setChanged();
-				notifyObservers(endingPosition);
-				
-				clearActivePosition();
-				changeActivePlayer();
-				
+				notifyObservers(new Update(activePosition, endingPosition));
+	
+				// If the move requested is a jump, handle additional work.
 				if(availableMoves.get(i).isJump()) {
 					Position jumpedPosition = availableMoves.get(i).getJumpedPosition();
 					board.removePiece(jumpedPosition);
 					
 					// Model notifying View
 					setChanged();
-					notifyObservers(jumpedPosition);
-					
-					//TODO remove doubling of code. changing the active player excessively could affect something like
-					// a turn counter later on in development.
-					changeActivePlayer();
+					notifyObservers(new Update(jumpedPosition, "remove"));
+
 					setActivePosition(endingPosition);
+				} else {
+					clearActivePosition();
+					changeActivePlayer();
+					midJump = false;
 				}
 				
 				promote(endingPosition);
@@ -127,8 +124,6 @@ import java.awt.Color;
 				return;
 			}
 		}
-		
-		setActivePosition(position);
 	}
 
 	/**
@@ -140,19 +135,14 @@ import java.awt.Color;
 		} else {
 			this.activePlayer = this.player1;
 		}
-		
-		//TODO Remove after debugging
-		// System.out.println("Active player has ID: " + this.activePlayer.getID());
 	}
 
-	//TODO Finish switching the Jump model to a multi-step turn, fix overloaded methods.
 	public void setActivePosition(int x, int y) {
 		try { 
 		Position position = board.getPosition(x, y);
 		setActivePosition(position);
 		} catch (InvalidPositionException e) {
 			System.out.println("Position is invalid. Piece cannot be selected.");
-			clearActivePosition();
 			return;
 		}
 	}
@@ -161,15 +151,13 @@ import java.awt.Color;
 		//TODO Rewrote this for debugging. Old (shorter) version commented out below.
 		if(!position.hasPiece()) {
 			System.out.println("sAP: No Piece at the requested location.");
-			clearActivePosition();
 		}
 		else if(position.getPiece().getColor() != activePlayer.getColor()) {
 			System.out.println("sAP: The Piece on the requested Position is of the wrong Color.");
-			clearActivePosition();
-		} else {
+		} else if (!midJump) {
 			System.out.println("sAP: Setting activePosition to (" + position.getX() + ", " + position.getY() + ").");
 			this.activePosition = position;
-		}
+		} 
 		/*
 		if(position.hasPiece() && (position.getPiece().getColor() == activePlayer.getColor())) {
 				this.activePosition = position;
@@ -191,16 +179,12 @@ import java.awt.Color;
 			
 			// Model notifying View.
 			setChanged();
-			notifyObservers(position);
+			notifyObservers(new Update(position, "promote"));
 		}
 	}
 	
 	public Position getActivePosition() {
 		return activePosition;
-	}
-	
-	public boolean hasActivePosition() {
-		return (activePosition != null);
 	}
 	
 	public void clearActivePosition() {
@@ -228,7 +212,7 @@ import java.awt.Color;
 	}
 	
 	public ArrayList<Move> getJumps(ArrayList<Move> moves) { 
-		ArrayList jumps = new ArrayList<Move>();
+		ArrayList<Move> jumps = new ArrayList<Move>();
 		int numberOfMoves = moves.size();
 		for(int i = 0; i < numberOfMoves; i++) {
 			
@@ -236,26 +220,24 @@ import java.awt.Color;
 		return jumps;
 	}
 	
-	private ArrayList<Move> getAvailableMoves(Position startingPosition, int directionModifier, ArrayList<Move> availableMoves) {
+	private ArrayList<Move> getAvailableMoves(Position startingPosition, int directionModifier, boolean secondIteration) {
+		ArrayList<Move> availableMoves = new ArrayList<Move>();
 		Position nextPosition, jumpedPosition;
 		int startingX = startingPosition.getX();
 		int startingY = startingPosition.getY();
 		Color activeColor = startingPosition.getPiece().getColor();
 		
+		// Check the move forward and to the left.
+		try {
+			nextPosition = board.getPosition(startingX - 1, startingY + directionModifier);
+			if(!nextPosition.hasPiece()) availableMoves.add(new Move(startingPosition, nextPosition));
+		} catch (InvalidPositionException e) {}
 		
-		if(!midJump) {
-			// Check the move forward and to the left.
-			try {
-				nextPosition = board.getPosition(startingX - 1, startingY + directionModifier);
-				if(!nextPosition.hasPiece()) availableMoves.add(new Move(startingPosition, nextPosition));
-			} catch (InvalidPositionException e) {}
-			
-			// Check the move forward and to the right.
-			try {
-				nextPosition = board.getPosition(startingX + 1, startingY + directionModifier);
-				if(!nextPosition.hasPiece()) availableMoves.add(new Move(startingPosition, nextPosition));
-			} catch (InvalidPositionException e) {}
-		}
+		// Check the move forward and to the right.
+		try {
+			nextPosition = board.getPosition(startingX + 1, startingY + directionModifier);
+			if(!nextPosition.hasPiece()) availableMoves.add(new Move(startingPosition, nextPosition));
+		} catch (InvalidPositionException e) {}
 		
 		// Check the jump forward and to the left.
 		try {
@@ -273,12 +255,11 @@ import java.awt.Color;
 		
 		// If Piece is king check backwards jumps and moves as well.
 		// This is done by switching the direction modifier and running the method again.
-		if(startingPosition.getPiece().isKing()) {
-			//TODO fix this nonsense.
-			// I think this might break everything. But I'm also not sure if Lists can have duplicate items, so maybe it won't break
-			// even though it probably should.
-			// EDIT: I think this assignment is unnecessary.
-			availableMoves = getAvailableMoves(startingPosition, (directionModifier * -1), availableMoves);
+		// INFINITE LOOP...
+		if(startingPosition.getPiece().isKing() && !secondIteration) {
+			ArrayList<Move> kingMoves = getAvailableMoves(startingPosition, (directionModifier * -1), true);
+			availableMoves.addAll(kingMoves);
+			
 		}
 		
 		return availableMoves;
@@ -295,7 +276,17 @@ import java.awt.Color;
 		if(!startingPosition.hasPiece()) return availableMoves;
 		int directionModifier = 1;
 		if(startingPosition.getPiece().getColor() == Color.RED) directionModifier = -1;
-		return getAvailableMoves(startingPosition, directionModifier, availableMoves);
+		return getAvailableMoves(startingPosition, directionModifier, false);
+	}
+
+	public ArrayList<Move> removeNonJumps(ArrayList<Move> moves) {
+		ArrayList<Move> jumps = new ArrayList<Move>();
+		
+		for(int i = 0; i < moves.size(); i++) {
+			if(moves.get(i).isJump()) jumps.add(moves.get(i));
+		}
+		
+		return jumps;
 	}
 	
 	/*
@@ -316,4 +307,5 @@ import java.awt.Color;
 	public Board getBoard() {
 		return this.board;
 	}
-}
+
+ }
