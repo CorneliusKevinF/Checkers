@@ -71,7 +71,7 @@ public class BoardPanel extends JPanel {
 		
 		for(int i = 0; i < 8; i++) {
 			for(int j = 0; j < 8; j++) {
-				positionPanels[i][j].paintComponent(graphics);
+				if(positionPanels[i][j] != null) positionPanels[i][j].paintComponent(graphics);
 			}
 		}
 	}
@@ -89,9 +89,13 @@ public class BoardPanel extends JPanel {
 				//positionPanel = new PositionPanel(x, y, positionSideLength, color);
 				positionPanels[i][j] = positionPanel;
 				contentPane.add(positionPanel, new Integer(2));
+				//TODO remove after debugging
+				contentPane.revalidate();
 			}
 		}
+	
 	}
+	
 	public void printPositionPanels() {
 		System.out.println("Print Locations for Position Panels...");
 		PositionPanel positionPanel;

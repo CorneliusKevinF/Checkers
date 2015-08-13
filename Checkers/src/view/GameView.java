@@ -24,6 +24,9 @@ public class GameView implements Observer {
 		} else {
 			frame.setMinimumSize(new Dimension(screenWidth - 100, screenWidth - 100));
 		}
+		//TODO move to end of contstructor after debugging.
+		frame.pack();
+		frame.setVisible(true);
 		
 		Insets insets = frame.getInsets();
 		JLayeredPane contentPane = new JLayeredPane();
@@ -34,9 +37,6 @@ public class GameView implements Observer {
 		
 		frame.getContentPane().add(boardPanel, new Integer(1));
 		boardPanel.setPositionPanels();
-		
-		frame.pack();
-		frame.setVisible(true);
 	}
 
 	// This method seems to be slightly dependent on the model.
