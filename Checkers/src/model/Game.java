@@ -84,6 +84,7 @@ import java.awt.Color;
 		// If there are no Moves available, throw an Exception.
 		if(numberOfMoves == 0) {
 			midJump = false;
+			changeActivePlayer();
 			throw new InvalidMoveException("There are no moves available for the Piece selected.");
 		}
 		
