@@ -40,10 +40,8 @@ public class GameController implements MouseListener {
 	
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		System.out.print("Event Detected: ");
 		if(e.getSource() instanceof PositionPanel) {
 			PositionPanel positionPanel = (PositionPanel) e.getSource();
-			System.out.println("Position (" + positionPanel.getXPosition() + ", " + (7 - positionPanel.getYPosition()) + ")");
 			try {
 				game.move(game.getBoard().getPosition(positionPanel.getXPosition(), 7 - positionPanel.getYPosition()));
 				//gameView.getFrame().revalidate();
@@ -54,10 +52,8 @@ public class GameController implements MouseListener {
 			}
 			
 		} else if(e.getSource() instanceof BoardPanel) {
-			System.out.println("Board");
 		} else if(e.getSource() instanceof PiecePanel) {
 			PiecePanel panel = (PiecePanel) e.getSource();
-			System.out.println("Piece (" + panel.getXPosition() + ", " + (7 - panel.getYPosition()) + ")");
 			try { 
 				game.setActivePosition(game.getBoard().getPosition(panel.getXPosition(), 7 - panel.getYPosition()));
 			} catch (InvalidPositionException exc) {

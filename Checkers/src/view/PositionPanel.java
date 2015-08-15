@@ -68,7 +68,6 @@ public class PositionPanel extends JPanel {
 	}
 	
 	public void addPiece(Color color) {
-		//System.out.println("Adding a piece at position (" + x + ", " + y + ").");
 		JLayeredPane contentPane = (JLayeredPane) getParent();
 		piecePanel = new PiecePanel(xPosition, yPosition, getX(), getY(), sideLength, color);
 		contentPane.add(piecePanel, new Integer(3));

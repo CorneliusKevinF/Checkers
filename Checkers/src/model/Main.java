@@ -45,8 +45,9 @@ public class Main {
     	game.addObserver(gameView);
     	
     	gameView.addController(gameController);
+    	try {
     	game.stageBoard();
-    	
+    	} catch (InvalidPositionException e) {}
     	gameView.getFrame().getContentPane().revalidate();
     	//gameView.getFrame().repaint();
     }

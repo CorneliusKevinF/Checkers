@@ -1,3 +1,5 @@
 /bin/
 /doc/
 /bin/
+.DS_Store
+/doc/*
