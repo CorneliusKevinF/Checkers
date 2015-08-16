@@ -34,7 +34,7 @@ public class PiecePanel extends JPanel {
 		graphics.drawOval(offset, offset, diameter, diameter);
 
 		if(isKing) {
-			graphics.drawOval((int) (diameter / 4), (int) (diameter / 4), (int) (diameter / 2), (int) (diameter / 2));
+			graphics.drawOval(offset * 3, offset *3, (int) (diameter / 2), (int) (diameter / 2));
 		}
 	}
 	

@@ -3,9 +3,6 @@ package controller;
 import model.*;
 import view.*;
 import java.awt.event.*;
-import javax.swing.*;
-
-import javax.swing.KeyStroke;
 
 
 public class GameController implements MouseListener {

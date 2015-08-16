@@ -1,4 +1,5 @@
 package model;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Observable;
@@ -6,25 +7,16 @@ import java.awt.Color;
 
 /**
  * <p>
- * The Game class is responsible for handling the Players and the Board. Currently, it implements rules for moving and capturing pieces.
+ * The Game class is responsible for handling the Players and the Board.
  * </p>
- * <p>
- * <b>Features to Add:</b>
- * <ul>
- * <li>Promotion ("Kinging") Logic</li>
- * <li>Forced Multiple Jumps</li>
- * <li>Victory Conditions (No Moves Remaining)</li>
- * </ul>
- * <p>
  * @author Kevin Cornelius
  */
  public class Game extends Observable {
 	private Board board;
 	private Player player1, player2, activePlayer;
-	//TODO Implement victory conditions.
 	Hashtable<Position, ArrayList<Position>> availableMoves;
 	private Position activePosition;
-	private boolean midJump;
+	private boolean midJump, jumpMandatory;
 	
 	public Game() {
 		this.board = new Board();
@@ -32,6 +24,7 @@ import java.awt.Color;
 		this.player2 = new Player(Color.RED);
 		this.activePlayer = player1;
 		availableMoves = new Hashtable<Position, ArrayList<Position>>();
+		jumpMandatory = false;
 	}
 	
 	/* 
@@ -97,7 +90,6 @@ import java.awt.Color;
 			notifyObservers(new Update(jumpedPosition, "remove"));
 
 			activePosition = destination;
-			
 			midJump = true;
 		} else {
 			clearActivePosition();
@@ -105,56 +97,36 @@ import java.awt.Color;
 			midJump = false;
 		}
 		
-		promote(destination);
+		crown(destination);
 		
-		// TODO consider changing the behavior of updateAvailableMoves to only show the moves that can be made in that instant,
-		// instead of computing all available moves.
-		
-		// optimize this to only update moves for unaffected pieces
 		availableMoves.clear();
 		updateAvailableMoves();
 
 		// This is the code that makes multiple jumps mandatory.
 		// if updateAvailableMoves is changed as mentioned above, all of this code should be moved to that method.
-		if(midJump) { 
-			// TODO Fix Bug: The piece in the middle of a jump sequence is allowed to make moves that aren't jumps.
-			ArrayList<Position> jumps = getJumps();
+		if(midJump && (availableMoves.size() == 0)) {
+			clearActivePosition();
+			changeActivePlayer();
+			midJump = false;
 
-			if(jumps.size() > 0) {
-				availableMoves.remove(activePosition);
-				availableMoves.put(activePosition, jumps);
-			} else {
-				clearActivePosition();
-				changeActivePlayer();
-				midJump = false;
-			}
-			
+			updateAvailableMoves();
 		}
 		
-		return;
-	}		
-	 
-	private ArrayList<Position> getJumps() {
-		ArrayList<Position> jumps = new ArrayList<Position>();
-		System.out.println("Getting Jumps for Position (" + activePosition.getX() + ", " + activePosition.getY() + ")...");
-		if(availableMoves.containsKey(activePosition)) {
-			System.out.println("Getting Jumps for Position (" + activePosition.getX() + ", " + activePosition.getY() + ")...");
-			
-			ArrayList<Position> moves = availableMoves.get(activePosition);
-			
-			for(int i = 0; i < moves.size(); i++) {
-				if(isJump(activePosition, moves.get(i))) jumps.add(moves.get(i));
-			}
+		if(availableMoves.size() == 0) {
+			endGame();
 		}
-		
-		return jumps;
 	}
 	
-	private boolean isJump(Position start, Position end) {
-		int xDisplacement = start.getX() - end.getX();
-		int yDisplacement = start.getY() - end.getY();
+	private void endGame() {
+		Player winner;
 		
-		return((Math.abs(xDisplacement) == 2) && (Math.abs(yDisplacement) == 2));
+		if(activePlayer.getID() == player1.getID()) { 
+			winner = player2;
+		} else {
+			winner = player1;
+		}
+		
+		System.out.println("Congratulations, " + winner.getName() + "! You won!");
 	}
 
 	private Position getJumpedPosition(Position beginning, Position destination) throws InvalidPositionException {
@@ -168,70 +140,7 @@ import java.awt.Color;
 			return null;
 		}
 	}
-	
-	/**
-	public void move(Position position) throws InvalidMoveException {
-		// If there is no Piece selected before the move is requested, throw an Exception.
-		if((activePosition == null) || !activePosition.hasPiece()) throw new InvalidMoveException("Can't move without a Piece selected.");
-		
-		// Get the available moves
-		ArrayList<Move> availableMoves = getAvailableMoves(activePosition);
-		int numberOfMoves = availableMoves.size();
-		System.out.println("m: There are " + numberOfMoves + " available");
-		
-		// If a jump was just completed remove all non-'jump' Moves from the list of available Moves.
-		if(midJump) {
-			availableMoves = removeNonJumps(availableMoves);
-		}
-		// If there are no Moves available, throw an Exception.
-		if(numberOfMoves == 0) {
-			midJump = false;
-			changeActivePlayer();
-			throw new InvalidMoveException("There are no moves available for the Piece selected.");
-		}
-		
-		Position endingPosition;
-		
-		// Check if the Position requested to move to, is one of the available Moves.
-		for(int i = 0; i < numberOfMoves; i++) {
-			endingPosition = availableMoves.get(i).getEndingPosition();
-			
-			if(endingPosition.equals(position)) {
-				System.out.println("m: (" + position.getX() + ", " + position.getY() + ") is a valid Move.");
-				board.movePiece(activePosition, endingPosition);
-				
-				// Model notifying View
-				setChanged();
-				notifyObservers(new Update(activePosition, endingPosition));
-	
-				// If the move requested is a jump, handle additional work.
-				if(availableMoves.get(i).isJump()) {
-					Position jumpedPosition = availableMoves.get(i).getJumpedPosition();
-					board.removePiece(jumpedPosition);
-					
-					// Model notifying View
-					setChanged();
-					notifyObservers(new Update(jumpedPosition, "remove"));
 
-					setActivePosition(endingPosition);
-					// fixed multi-jump bug?
-					midJump = true;
-				} else {
-					clearActivePosition();
-					changeActivePlayer();
-					midJump = false;
-				}
-				
-				promote(endingPosition);
-				
-				availableMoves = getAvailableMoves();
-				
-				return;
-			}
-		}
-	}
-	*/
-	
 	/**
 	 * Changes the active player, so the game knows who to accept moves from.
 	 */
@@ -249,32 +158,25 @@ import java.awt.Color;
 		setActivePosition(position);
 		} catch (InvalidPositionException e) {
 			System.out.println("Position is invalid. Piece cannot be selected.");
-			return;
 		}
 	}
 	
 	public void setActivePosition(Position position) {
-		//TODO Rewrote this for debugging. Old (shorter) version commented out below.
 		// This might be useful for giving guidance to a player making incorrect moves.
 		if(!position.hasPiece()) {
 			System.out.println("sAP: No Piece at (" + position.getX() + ", " + position.getY() + ")");
 		}
 		else if(position.getPiece().getColor() != activePlayer.getColor()) {
 			System.out.println("sAP: The Piece on the requested Position is of the wrong Color.");
-		} else if (!midJump) {
+		} else if (midJump && (position != activePosition)) {
+			System.out.println("sAP: Cannot switch active Position in the middle of a jump.");
+		}else if (!midJump) {
 			System.out.println("sAP: Setting activePosition to (" + position.getX() + ", " + position.getY() + ").");
 			this.activePosition = position;
 		} 
-		/*
-		if(position.hasPiece() && (position.getPiece().getColor() == activePlayer.getColor())) {
-				this.activePosition = position;
-		} else {
-			clearActivePosition();
-		}
-		*/
 	}
 
-	public void promote(Position position) {
+	public void crown(Position position) {
 		if (!position.hasPiece()) return;
 		
 		Piece piece = position.getPiece();
@@ -295,79 +197,147 @@ import java.awt.Color;
 		activePosition = null;
 	}
 
-	private ArrayList<Position> getAvailableMoves(Position startingPosition, int directionModifier, boolean secondIteration) {
-		ArrayList<Position> availableMoves = new ArrayList<Position>();
-		Position destination, jumpedPosition;
-		int startingX = startingPosition.getX();
-		int startingY = startingPosition.getY();
-		Color activeColor = startingPosition.getPiece().getColor();
+	public void updateAvailableMoves() throws InvalidPositionException {
+		Position startingPosition;
+		// This variable is used to signal the discovery of the first possible Jump. It tells the function to ignore all moves found before now.
+		boolean ignorePreviousMoves = !jumpMandatory;
+		ArrayList<Position> moves = new ArrayList<Position>();
+		availableMoves.clear();
 		
-		// Check the move forward and to the left.
+		if(!midJump) {
+			// iterate over the black spaces on the board.
+			for(int i = 0; i < 8; i++) {
+				for(int j = 0; j < 8; j+=2) { 
+					startingPosition = board.getPosition(i, j + (i % 2));
+					moves = getAvailableMoves(startingPosition);
+					
+					if(moves.size() > 0) {
+						if(jumpMandatory && ignorePreviousMoves) {
+							availableMoves.clear();
+							ignorePreviousMoves = false;
+						}
+						
+						availableMoves.put(startingPosition, moves);		
+						System.out.println("Positon (" + startingPosition.getX() + ", " + startingPosition.getY() + ") has " + moves.size() + " available moves.");
+					}
+				}
+			}
+		} else {
+			jumpMandatory = true;
+			moves = getAvailableMoves(activePosition);
+			if(moves.size() > 0) availableMoves.put(activePosition, moves);
+		}
+		
+		jumpMandatory = false;
+	}
+
+	private ArrayList<Position> getAvailableMoves(Position start) {
+		ArrayList<Position> moves = new ArrayList<Position>();
+		if(!start.hasPiece() || (start.getPiece().getColor() != activePlayer.getColor())) return moves;
+		moves = getJumps(start);
+		if(moves.size() > 0) jumpMandatory = true;
+		if(!jumpMandatory) moves = getMoves(start);		
+		return moves;
+	}
+	
+	/**
+	 * Helper function for getAvailableMoves.
+	 * Decided to eliminate the parameter which flagged the piece as a king. this makes the function roughly twice the size.
+	 * Will consider rewriting again.
+	 * @param start The position from which to look for jumps. This Position is guaranteed to have a Piece on it.
+	 * @return An ArrayList of valid jump Positions.
+	 */
+	private ArrayList<Position> getJumps(Position start) {
+		ArrayList<Position> jumps = new ArrayList<Position>();
+		Position destination, jumpedPosition;
+		int startingX = start.getX();
+		int startingY = start.getY();
+		int direction = 1;
+		
+		Color activeColor = start.getPiece().getColor();
+		if(activeColor == Color.RED) direction = -1;
+		
+		// The below section of code can be shortened greatly using tricky loops, but it makes the code far less readable.
+		// Check forward jumps
 		try {
-			destination = board.getPosition(startingX - 1, startingY + directionModifier);
-			if(!destination.hasPiece()) availableMoves.add(destination);
+			destination = board.getPosition(startingX - 2, startingY + (2 * direction));		
+			jumpedPosition = board.getPosition(startingX - 1, startingY + direction);
+			if(jumpedPosition.hasPiece() && (jumpedPosition.getPiece().getColor() != activeColor) && !destination.hasPiece()) jumps.add(destination);
+		} catch (InvalidPositionException e) {}
+
+		try { 
+			destination = board.getPosition(startingX + 2, startingY + (2 * direction));
+			jumpedPosition = board.getPosition(startingX + 1, startingY + direction);
+			if(jumpedPosition.hasPiece() && (jumpedPosition.getPiece().getColor() != activeColor) && !destination.hasPiece()) jumps.add(destination);
+		} catch (InvalidPositionException e) {}
+		
+		// If King, check backward jumps
+		if(start.getPiece().isKing()) {
+			direction *= -1;
+			
+			try {
+				destination = board.getPosition(startingX - 2, startingY + (2 * direction));		
+				jumpedPosition = board.getPosition(startingX - 1, startingY + direction);
+				if(jumpedPosition.hasPiece() && (jumpedPosition.getPiece().getColor() != activeColor) && !destination.hasPiece()) jumps.add(destination);
+			} catch (InvalidPositionException e) {}
+
+			try { 
+				destination = board.getPosition(startingX + 2, startingY + (2 * direction));
+				jumpedPosition = board.getPosition(startingX + 1, startingY + direction);
+				if(jumpedPosition.hasPiece() && (jumpedPosition.getPiece().getColor() != activeColor) && !destination.hasPiece()) jumps.add(destination);
+			} catch (InvalidPositionException e) {}
+		}
+		
+		return jumps;
+	}
+	
+	/**
+	 * Helper function of getAvailableMoves
+	 * @param start The Position from which to look for moves.
+	 * @return An ArrayList of Positions to move to.
+	 */
+	private ArrayList<Position> getMoves(Position start) {
+		ArrayList<Position> moves = new ArrayList<Position>();
+		
+		Position destination;
+		int startingX = start.getX();
+		int startingY = start.getY();
+		int direction = 1;
+		
+		Color activeColor = start.getPiece().getColor();
+		if(activeColor == Color.RED) direction = -1;
+		
+		// Check forward moves
+		try {
+			destination = board.getPosition(startingX - 1, startingY + direction);
+			if(!destination.hasPiece()) moves.add(destination);
 		} catch (InvalidPositionException e) {}
 		
 		// Check the move forward and to the right.
 		try {
-			destination = board.getPosition(startingX + 1, startingY + directionModifier);
-			if(!destination.hasPiece()) availableMoves.add(destination);
+			destination = board.getPosition(startingX + 1, startingY + direction);
+			if(!destination.hasPiece()) moves.add(destination);
 		} catch (InvalidPositionException e) {}
 		
-		// Check the jump forward and to the left.
-		try {
-			destination = board.getPosition(startingX - 2, startingY + (2 * directionModifier));		
-			jumpedPosition = board.getPosition(startingX - 1, startingY + directionModifier);
-			if(jumpedPosition.hasPiece() && (jumpedPosition.getPiece().getColor() != activeColor) && !destination.hasPiece()) availableMoves.add(destination);
-		} catch (InvalidPositionException e) {}
-
-		// Check the jump forward and to the right.
-		try { 
-			destination = board.getPosition(startingX + 2, startingY + (2 * directionModifier));
-			jumpedPosition = board.getPosition(startingX + 1, startingY + directionModifier);
-			if(jumpedPosition.hasPiece() && (jumpedPosition.getPiece().getColor() != activeColor) && !destination.hasPiece()) availableMoves.add(destination);
-		} catch (InvalidPositionException e) {}
+		// If King, check backwards jumps
+		if(start.getPiece().isKing()) {
+			direction *= -1;
 		
-		// If Piece is king check backwards jumps and moves as well.
-		// This is done by switching the direction modifier and running the method again.
-		if(startingPosition.getPiece().isKing() && !secondIteration) {
-			ArrayList<Position> kingMoves = getAvailableMoves(startingPosition, (directionModifier * -1), true);
-			availableMoves.addAll(kingMoves);
+			try {
+				destination = board.getPosition(startingX - 1, startingY + direction);
+				if(!destination.hasPiece()) moves.add(destination);
+			} catch (InvalidPositionException e) {}
+			
+			// Check the move forward and to the right.
+			try {
+				destination = board.getPosition(startingX + 1, startingY + direction);
+				if(!destination.hasPiece()) moves.add(destination);
+			} catch (InvalidPositionException e) {}
 		}
 		
-		return availableMoves;
+		return moves;
 	}
 	
-	/**
-	 * Returns all the legal moves from the given Position for the active Player.
-	 * @param startingPosition The position from which the returned Moves will start.
-	 * @return All the possible Moves starting from the given Position for the active Player.
-	 */
-	public ArrayList<Position> getAvailableMoves(Position startingPosition) { 
-		ArrayList<Position> availableMoves = new ArrayList<Position>();
-		if(!startingPosition.hasPiece()) return availableMoves;
-		int directionModifier = 1;
-		if(startingPosition.getPiece().getColor() == Color.RED) directionModifier = -1;
-		return getAvailableMoves(startingPosition, directionModifier, false);
-	}
-
-	public void updateAvailableMoves() throws InvalidPositionException { 
-		Position startingPosition;
-		ArrayList<Position> moves = new ArrayList<Position>();
-		// iterate over the black spaces on the board.
-		for(int i = 0; i < 8; i++) {
-			for(int j = 0; j < 8; j+=2) { 
-				startingPosition = board.getPosition(i, j + (i % 2));
-				moves = getAvailableMoves(startingPosition);
-				
-				if(moves.size() > 0) {
-					availableMoves.put(startingPosition, moves);		
-					System.out.println("Positon (" + startingPosition.getX() + ", " + startingPosition.getY() + ") has " + moves.size() + " available moves.");
-				}
-			}
-		}
-	}
-
 	/*
 	 * Getters and Setters
 	 */
@@ -390,5 +360,4 @@ import java.awt.Color;
 	public Board getBoard() {
 		return this.board;
 	}
-
  }

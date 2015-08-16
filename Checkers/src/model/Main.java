@@ -1,7 +1,6 @@
 package model;
 
 import controller.GameController;
-import model.*;
 import view.*;
 
 public class Main {	
