@@ -35,24 +35,12 @@ public class PositionPanel extends JPanel {
 		setLocation(x, y);
 		setSize(sideLength, sideLength);
 	}
-	/*
-	PositionPanel(int xOrigin, int yOrigin, int sideLength, Color color) {
-		this.xPosition = xOrigin; 
-		this.yPosition = yOrigin;
-		this.sideLength = sideLength;
-		this.color = color;
-		piecePanel = null;
-		setLocation(xOrigin, yOrigin);
-		setSize(sideLength, sideLength);
-		//System.out.println("PP: Construction Complete! [x: " + x + ", y: " + y + ", sideLength: " + sideLength + ", color: " + color.toString() + "]");
-	}
-	*/
+
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		Graphics2D graphics = (Graphics2D) g;
 		
-		//System.out.println("painting position at: (" + x + ", " + y + "). Sidelength: " + sideLength);
 		graphics.setColor(color);
 		graphics.fillRect(0, 0, sideLength, sideLength);
 		if(piecePanel != null) {

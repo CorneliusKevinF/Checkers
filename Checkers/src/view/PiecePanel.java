@@ -55,4 +55,5 @@ public class PiecePanel extends JPanel {
 	public int getYPosition() {
 		return yPosition;
 	}
+
 }

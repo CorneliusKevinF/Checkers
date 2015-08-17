@@ -161,7 +161,7 @@ import java.awt.Color;
 		}
 	}
 	
-	public void setActivePosition(Position position) {
+	public boolean setActivePosition(Position position) {
 		// This might be useful for giving guidance to a player making incorrect moves.
 		if(!position.hasPiece()) {
 			System.out.println("sAP: No Piece at (" + position.getX() + ", " + position.getY() + ")");
@@ -173,7 +173,10 @@ import java.awt.Color;
 		}else if (!midJump) {
 			System.out.println("sAP: Setting activePosition to (" + position.getX() + ", " + position.getY() + ").");
 			this.activePosition = position;
+			return true;
 		} 
+		
+		return false;
 	}
 
 	public void crown(Position position) {
@@ -199,7 +202,7 @@ import java.awt.Color;
 
 	public void updateAvailableMoves() throws InvalidPositionException {
 		Position startingPosition;
-		// This variable is used to signal the discovery of the first possible Jump. It tells the function to ignore all moves found before now.
+		// This variable is used to signal the discovery of the first possible Jump.
 		boolean ignorePreviousMoves = !jumpMandatory;
 		ArrayList<Position> moves = new ArrayList<Position>();
 		availableMoves.clear();
